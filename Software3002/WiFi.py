@@ -62,7 +62,11 @@ def getTrilateration(position1, position2, position3):
     return x4, y4
 
 
-class Position(object):
+#-----------------------------------------------------------------------------
+# WifiPosition stores a wifi node coordinates and it's radius based on signal
+# strength
+#-----------------------------------------------------------------------------
+class WifiPosition(object):
     def __init__(self, x, y, radius):
         self.x = x
         self.y = y
