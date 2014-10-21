@@ -1,7 +1,24 @@
-import requests, math, heapq, time
+import requests, math, heapq, time, json
 from pprint import pprint
 
 stepLength = 50 #cm
+#rPi GPIO interrupt will activate UART read on rPi's side
+#flag to tell UART handler whether we are taking in currentXYheading during
+#navigation or we are taking in keyad values when outside navigation
+navigation = 0
+#-----------------------------------------------------------------------------
+#These values will be updated real-time by the arduino through UART when 
+#navigation begins
+currentX = 0
+currentY = 0
+currentHeading = 0
+#-----------------------------------------------------------------------------
+
+#-----------------------------------------------------------------------------
+#Sample command to play Intro.txt audio
+#espeak -v+f3 -s100 -f /home/pi/Vision/Intro.txt --stdout | aplay
+#all audio will be put in .txt files to resolve a lag issue with audio playback
+#-----------------------------------------------------------------------------
 
 #-----------------------------------------------------------------------------
 # initialise building name and level
@@ -11,17 +28,27 @@ def initialise():
     #http://showmyway.comp.nus.edu.sg/getMapInfoGraphView.php?Building=AAA&Level=BBB
     url = "http://ShowMyWay.comp.nus.edu.sg/getMapInfo.php"
     
-    buildingName = "oksure"
-    level = 1337
-    mapID = [buildingName, level]
-    params = dict(Building = buildingName, Level = level)
-    response = requests.get(url=url, params = params)
-    data = response.json()
+    control = int(input("Press 1 to input new map, Press 2 to load Com1 Level 2\n"))
+
+    if control == 1:
+        buildingName = str(raw_input("Enter building name\n"))
+        level = int(raw_input("Enter level\n"))
+        #buildingName = "oksure"
+        #level = 1337
+
+        mapID = [buildingName, level]
+        params = dict(Building = buildingName, Level = level)
+        response = requests.get(url=url, params = params)
+        data = response.json()
+
+    elif control == 2:
+        json_data=open('data.txt')
+        data = json.load(json_data)
+        json_data.close()
     
-    
-    FloorPlanDatabase = FloorPlanList()  #initialise database
-    myFloorPlan = FloorPlan(mapID, data)    
-    FloorPlanDatabase.addFloorPlan(myFloorPlan) #add floor plan to database
+    #FloorPlanDatabase = FloorPlanList()  #initialise database
+    #myFloorPlan = FloorPlan(mapID, data)    
+    #FloorPlanDatabase.addFloorPlan(myFloorPlan) #add floor plan to database
     
     return data
 
@@ -44,11 +71,14 @@ def startUp():
 def main():
     data = initialise()
     pprint(data)
+    global currentX
+    global currentY
+    global currentHeading
 
     nodeList = NodeList(data["map"], data["info"])
     aList = AdjList(nodeList)        #constructs adjlist from node list
 
-    currentInstruction = int(input("Press 1 to begin navigating, 2 to select function"))
+    currentInstruction = int(input("Press 1 to begin navigating"))
     
     if (currentInstruction == 1):
         startNode = nodeList.getNodeById(int(input("Input start node id")))
@@ -72,10 +102,17 @@ def main():
                 currentHeading = 0#get from arduino
                
                 direction, degree  = computeDirection(currentHeading, currentX, currentY, targetNode.x, targetNode.y, nodeList.north)
-                
-                currentX, currentY = updateCurrentLocation(currentX, currentY, currentHeading, 1)
+                print (direction, degree)
+
+                #just for testing. to be updated through uart by arduino
+                currentX = int(input("Input currentX\n"))
+                currentY = int(input("Input currentY\n"))
+                currentHeading = int(input("Input currentHeading\n"))
+                #currentX, currentY = updateCurrentLocation(currentX, currentY, currentHeading, 1)
             
-            i = i + 1 
+
+            if targetNode != destinationNode : #prevent overflow
+                i = i + 1 
     else:
         print ("test") 
 
