@@ -1,23 +1,23 @@
 import requests, math, heapq, time, json
 from pprint import pprint
+from settings import *
 
-stepLength = 50 #cm
-#rPi GPIO interrupt will activate UART read on rPi's side
-#flag to tell UART handler whether we are taking in currentXYheading during
-#navigation or we are taking in keyad values when outside navigation
+# rPi GPIO interrupt will activate UART read on rPi's side
+# flag to tell UART handler whether we are taking in currentXYheading during
+# navigation or we are taking in keyad values when outside navigation
 navigation = 0
 #-----------------------------------------------------------------------------
-#These values will be updated real-time by the arduino through UART when 
-#navigation begins
+# These values will be updated real-time by the arduino through UART when 
+# navigation begins
 currentX = 0
 currentY = 0
 currentHeading = 0
 #-----------------------------------------------------------------------------
 
 #-----------------------------------------------------------------------------
-#Sample command to play Intro.txt audio
-#espeak -v+f3 -s100 -f /home/pi/Vision/Intro.txt --stdout | aplay
-#all audio will be put in .txt files to resolve a lag issue with audio playback
+# Sample command to play Intro.txt audio
+# espeak -v+f3 -s100 -f /home/pi/Vision/Intro.txt --stdout | aplay
+# all audio will be put in .txt files to resolve a lag issue with audio playback
 #-----------------------------------------------------------------------------
 
 #-----------------------------------------------------------------------------
@@ -99,7 +99,6 @@ def main():
             while (isReached(currentX, currentY, targetNode.x, targetNode.y) == False):
                 #update currentHeading
                 time.sleep(1) #assume 1 step 1 second
-                currentHeading = 0#get from arduino
                
                 direction, degree  = computeDirection(currentHeading, currentX, currentY, targetNode.x, targetNode.y, nodeList.north)
                 print (direction, degree)
@@ -129,7 +128,7 @@ def isReached(currentX, currentY, nextX, nextY):
     
     d = math.sqrt(yDistance ** 2 + xDistance ** 2)
     
-    if (d < 50.0):
+    if (d < offsetDistance):
         return True
     else:
         return False
@@ -211,7 +210,8 @@ def updateCurrentLocation(prevX, prevY, prevHeading, numStep):
 
 #-----------------------------------------------------------------------------
 # Returns shortest path as a list of nodes given a graph, start node, end node
-# using Dijkstra's algorithm
+# using Dijkstra's algorithm. Reference: 
+# http://pyalgoviz.appspot.com/show?edit=False&name=Graphs%20-%20Dijkstra%20Shortest%20Path
 #-----------------------------------------------------------------------------
 def shortestPath(graph, start, end):
     queue = [(0, start, [])]
