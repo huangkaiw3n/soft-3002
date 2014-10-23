@@ -1,8 +1,6 @@
-import requests, heapq, time, json
-from pprint import pprint
+# main module of the system
+
 from Settings import *
-from NodeList import *
-from FloorPlanManager import *
 
 # rPi GPIO interrupt will activate UART read on rPi's side
 # flag to tell UART handler whether we are taking in currentXYheading during
