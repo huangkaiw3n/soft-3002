@@ -223,6 +223,5 @@ def shortestPath(graph, start, end):
             for (next, c) in graph[v].iteritems():
                 heapq.heappush(queue, (cost + c, next, path))
 
-#test
 #-----------------------------------------------------------------------------
 main()
