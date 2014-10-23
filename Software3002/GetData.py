@@ -1,6 +1,6 @@
 import requests, math, heapq, time, json
 from pprint import pprint
-from settings import *
+from Settings import *
 
 # rPi GPIO interrupt will activate UART read on rPi's side
 # flag to tell UART handler whether we are taking in currentXYheading during
@@ -25,9 +25,6 @@ currentHeading = 0
 # get JSON response from the url and parse to data
 #-----------------------------------------------------------------------------
 def initialise():
-    #http://showmyway.comp.nus.edu.sg/getMapInfoGraphView.php?Building=AAA&Level=BBB
-    url = "http://ShowMyWay.comp.nus.edu.sg/getMapInfo.php"
-    
     control = int(input("Press 1 to input new map, Press 2 to load Com1 Level 2\n"))
 
     if control == 1:
