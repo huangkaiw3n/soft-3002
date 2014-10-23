@@ -1,5 +1,12 @@
+# This module contains:
+# - NodeList template and its inheritance: LocationNodeList and WifiNodeList
+# - AdjacncyList class to store LocationNode
+
 from Node import *
 
+#-----------------------------------------------------------------------------
+# NodeList class template for LocationNodeList class and WifiNodeList class
+#-----------------------------------------------------------------------------
 class NodeList(object):
     def __init__(self):
         self.numNodes = 0
@@ -52,3 +59,24 @@ class WifiNodeList(NodeList):
         for node_i in self.NodeList:
             if node_i.macAddr == macAddr:
                 return node_i 
+            
+  
+#-----------------------------------------------------------------------------
+# AdjList class store the map information
+# only includes LocationNodes
+#----------------------------------------------------------------------------- 
+class AdjList(object):
+    def __init__(self, nlist):
+        self.graph = {}
+        
+        for i in range(1, nlist.getNumNodes()+1):
+            tempNode1 = nlist.getNodeById(i)
+            adj = {}
+            for j in range(0, tempNode1.getNumNbr()):
+                tempNode2 = nlist.getNodeById(tempNode1.getNbrId(j))
+                adj[tempNode1.getNbrId(j)] = tempNode1.distanceTo(tempNode2)
+        
+            self.graph[i] = adj
+
+    def getGraph(self):
+        return self.graph
