@@ -102,7 +102,7 @@ def main():
                 direction, degree  = computeDirection(currentHeading, currentX, currentY, targetNode.x, targetNode.y, nodeList.north)
                 print (direction, degree)
 
-                #just for testing. to be updated through uart by arduino
+                #just for testing. to be updated through Uart by arduino
                 currentX = int(input("Input currentX\n"))
                 currentY = int(input("Input currentY\n"))
                 currentHeading = int(input("Input currentHeading\n"))
@@ -224,29 +224,6 @@ def shortestPath(graph, start, end):
                 return cost, path
             for (next, c) in graph[v].iteritems():
                 heapq.heappush(queue, (cost + c, next, path))
-
-
-
-#-----------------------------------------------------------------------------
-# AdjList class store the map information
-# only includes LocationNodes
-#----------------------------------------------------------------------------- 
-class AdjList(object):
-    def __init__(self, nlist):
-        self.graph = {}
-        
-        for i in range(1, nlist.getNumNodes()+1):
-            tempNode1 = nlist.getNodeById(i)
-            adj = {}
-            for j in range(0, tempNode1.getNumNbr()):
-                tempNode2 = nlist.getNodeById(tempNode1.getNbrId(j))
-                adj[tempNode1.getNbrId(j)] = tempNode1.distanceTo(tempNode2)
-        
-            self.graph[i] = adj
-
-    def getGraph(self):
-        return self.graph
-
 
 #-----------------------------------------------------------------------------
 #main()
