@@ -25,7 +25,7 @@ class Node(object):
 class LocationNode(Node):
     def __init__(self, nodeInfo):
         Node.__init__(self, nodeInfo)
-        self.addNeigbor(nodeInfo)
+        self.addNeighbor(nodeInfo)
         self.linkTo = []      #list of connected node ids coverted to integer
         for i in range(0, len(self.neighborsList)):
             self.linkTo.append(int(self.neighborsList[i]))
@@ -36,7 +36,7 @@ class LocationNode(Node):
     def getNbrId(self, num):
         return self.linkTo[num]
                  
-    def addNeigbor(self, nodeInfo):
+    def addNeighbor(self, nodeInfo):
         self.neighborsList = nodeInfo["linkTo"].split(",") #list of strings, must convert to integer first
     
 
