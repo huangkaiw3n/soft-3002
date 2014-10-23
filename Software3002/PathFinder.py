@@ -1,23 +1,24 @@
 # main module of the system
 
 from Settings import *
+from Uart import *
+
+#readData() -updates currentXYHeading
+#readKeypad() -returns a string with # at the end. eg. "12#"
+#sendKeyInt() -indicates to ard to read keypad. Needs to be called everytime when keypad needs to be read
+#sendSensorInt() -indicates to ard the start of navigation. to be called before sending ard x y coordinates.
 
 # rPi GPIO interrupt will activate UART read on rPi's side
 # flag to tell UART handler whether we are taking in currentXYheading during
 # navigation or we are taking in keyad values when outside navigation
 navigation = 0
-#-----------------------------------------------------------------------------
-# These values will be updated real-time by the arduino through UART when 
-# navigation begins
-currentX = 0
-currentY = 0
-currentHeading = 0
-#-----------------------------------------------------------------------------
 
 #-----------------------------------------------------------------------------
 # Sample command to play Intro.txt audio
-# espeak -v+f3 -s100 -f /home/pi/Vision/Intro.txt --stdout | aplay
+# os.system(espeak -v+f3 -s100 -f /home/pi/Vision/Intro.txt --stdout | aplay)
 # all audio will be put in .txt files to resolve a lag issue with audio playback
+# For playback without .txt file:
+# os.system(espeak -v+f3 -s100 "your command here" --stdout | aplay)
 #-----------------------------------------------------------------------------
 
 #-----------------------------------------------------------------------------
@@ -26,6 +27,7 @@ currentHeading = 0
 #-----------------------------------------------------------------------------
 def initialise():
     control = int(input("Press 1 to input new map, Press 2 to load Com1 Level 2\n"))
+    espeak -v+f3 -s100 -f /home/pi/Vision/Intro.txt --stdout | aplay
 
     if control == 1:
         buildingName = str(raw_input("Enter building name\n"))
@@ -247,4 +249,4 @@ class AdjList(object):
 
 
 #-----------------------------------------------------------------------------
-main()
+#main()
