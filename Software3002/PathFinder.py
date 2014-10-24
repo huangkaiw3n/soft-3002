@@ -27,7 +27,7 @@ navigation = 0
 #-----------------------------------------------------------------------------
 def initialise():
     control = int(input("Press 1 to input new map, Press 2 to load Com1 Level 2\n"))
-    espeak -v+f3 -s100 -f /home/pi/Vision/Intro.txt --stdout | aplay
+    #os.system(espeak -v+f3 -s100 -f /home/pi/Vision/Intro.txt --stdout | aplay)
 
     if control == 1:
         buildingName = str(raw_input("Enter building name\n"))
@@ -50,18 +50,6 @@ def initialise():
     #FloorPlanDatabase.addFloorPlan(myFloorPlan) #add floor plan to database
     
     return data
-
-
-#-----------------------------------------------------------------------------
-# startup function will play audio data when the system first starts up
-#-----------------------------------------------------------------------------
-def startUp():
-    # to audio: 1. Welcome Message. Press star hash at anytime to repeat last message
-    # to audio: 2. Please select the current map. (optional)
-    # to audio: 3. Press 1 to begin navigation. Press 2 to select another map
-    # to audio: 4. Please enter your current node ID
-    # to audio: 5. Please enter your destination node ID
-    return
 
 
 #-----------------------------------------------------------------------------
@@ -249,4 +237,4 @@ class AdjList(object):
 
 
 #-----------------------------------------------------------------------------
-#main()
+main()
