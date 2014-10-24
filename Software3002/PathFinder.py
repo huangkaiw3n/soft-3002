@@ -229,16 +229,27 @@ def computeDirection(currentHeading, currentX, currentY, nextX, nextY, north):
     diffAngle = currentHeadingWithOffset - targetHeading
     
     if (diffAngle < -180.0):
-        return "turn left", 360.0-math.fabs(diffAngle)
-    elif (-180.0 < diffAngle and diffAngle < -5.0):
-        return "turn right", math.fabs(diffAngle)
-    elif (-5.0 < diffAngle and diffAngle < 5.0):
-        return "straight", 0.0
-    elif (5.0 < diffAngle and diffAngle < 180.0):
-        return "turn left", diffAngle
+        finalHeading = currentHeading - (360.0-math.fabs(diffAngle))
+        if finalHeading < 0:
+            finalHeading = finalHeading + 360
+        return "turn left", finalHeading
+    elif (-180.0 < diffAngle and diffAngle < -offSetAngle):
+        finalHeading = currentHeading + (math.fabs(diffAngle))
+        if finalHeading >= 360:
+            finalHeading = finalHeading - 360
+        return "turn right", finalHeading
+    elif (-offSetAngle < diffAngle and diffAngle < offSetAngle):
+        return "straight", currentHeading
+    elif (offSetAngle < diffAngle and diffAngle < 180.0):
+        finalHeading = currentHeading - diffAngle
+        if finalHeading < 0:
+            finalHeading = finalHeading + 360
+        return "turn left", finalHeading
     elif (diffAngle > 180.0):
-        return "turn right", 360.0-diffAngle
-
+        finalHeading = currentHeading + (360.0-diffAngle)
+        if finalHeading >= 360:
+            finalHeading = finalHeading - 360
+        return "turn right", finalHeading
 
 #-----------------------------------------------------------------------------
 # update current coordinate based on the starting coordinate, starting
