@@ -355,7 +355,7 @@ def say(something):
 # main
 #-----------------------------------------------------------------------------
 def main():
-    handshake()
+    handShake()
     data = initialise()
     #pprint(data) #to be removed
     global currentX
