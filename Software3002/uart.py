@@ -25,3 +25,11 @@ def sendKeyInt():
 def sendSensorInt():
     
     return
+
+def readUART():
+
+    return
+
+def putBuffer():
+
+    return
