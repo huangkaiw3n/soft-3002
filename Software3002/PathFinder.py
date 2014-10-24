@@ -108,7 +108,7 @@ def main():
         putBuffer() 
         currentInstruction = readKeypad()
     
-    if (currentInstruction == "1#"):
+    while (currentInstruction == "1#"):   #edited to return here when a navigation has completed
         startNodeId = -1
         destinationNodeId = -1
         temp = ""
@@ -174,8 +174,8 @@ def main():
 
             if targetNode != destinationNode : #prevent overflow
                 i = i + 1 
-    else:
-        print ("test") 
+    #else:
+     #   print ("test") 
 
 
 #-----------------------------------------------------------------------------
