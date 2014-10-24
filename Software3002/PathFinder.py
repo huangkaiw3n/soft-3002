@@ -169,7 +169,8 @@ def main():
                 #currentX, currentY = updateCurrentLocation(currentX, currentY, currentHeading, 1)
             
             #output to audio here: 
-            #"Reached Node path[i]"
+            temp = "Reached Node " + str(path[i])
+            say(temp)
 
             if targetNode != destinationNode : #prevent overflow
                 i = i + 1 
