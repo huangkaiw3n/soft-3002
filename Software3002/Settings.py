@@ -1,7 +1,11 @@
 # This file contains the variables and constants to be used in the main program.
 # also contains various library usage
 
-import requests, heapq, time, json
+import requests, heapq, time, json, os
+import serial
+import time
+import RPi.GPIO as GPIO
+import wiringpi2 as Wire
 from pprint import pprint
 from NodeList import *
 from FloorPlanManager import *
@@ -17,13 +21,3 @@ stepLength = 50 #cm #might no longer be needed
 offsetDistance = 50
 # Allowable difference in heading to considered as acceptable
 offSetAngle = 5.0
-
-#-----------------------------------------------------------------------------
-# These values will be updated real-time by the arduino through UART when 
-# navigation begins
-currentX = 0
-currentY = 0
-currentHeading = 0
-#-----------------------------------------------------------------------------
-# String to hold data from uart
-inStr = "" 
