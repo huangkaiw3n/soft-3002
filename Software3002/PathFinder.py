@@ -26,6 +26,7 @@ navigation = 0
 # get JSON response from the url and parse to data
 #-----------------------------------------------------------------------------
 def initialise():
+<<<<<<< HEAD
     #audio welcome message
     #audio Press 1 to input new map, Press 2 to load Com1 Level 2\n
     control = 0
@@ -33,6 +34,10 @@ def initialise():
         sendKeyInt()
         control = readKeypad()
         control = int(input("Press 1 to input new map, Press 2 to load Com1 Level 2\n")) #to be removed
+=======
+    control = int(input("Press 1 to input new map, Press 2 to load Com1 Level 2\n"))
+    #os.system(espeak -v+f3 -s100 -f /home/pi/Vision/Intro.txt --stdout | aplay)
+>>>>>>> soft-3002/master
 
     while control == 1:
         sendKeyInt()
@@ -61,18 +66,6 @@ def initialise():
     #FloorPlanDatabase.addFloorPlan(myFloorPlan) #add floor plan to database
     
     return data
-
-
-#-----------------------------------------------------------------------------
-# startup function will play audio data when the system first starts up
-#-----------------------------------------------------------------------------
-def startUp():
-    # to audio: 1. Welcome Message. Press star hash at anytime to repeat last message
-    # to audio: 2. Please select the current map. (optional)
-    # to audio: 3. Press 1 to begin navigation. Press 2 to select another map
-    # to audio: 4. Please enter your current node ID
-    # to audio: 5. Please enter your destination node ID
-    return
 
 
 #-----------------------------------------------------------------------------
