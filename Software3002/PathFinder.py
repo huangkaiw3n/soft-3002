@@ -3,7 +3,7 @@
 from Settings import *
 from Uart import *
 
-#readData() -updates currentXYHeading
+#getLocData() -updates currentXYHeading
 #readKeypad() -returns a string with # at the end. eg. "12#"
 #sendKeyInt() -indicates to ard to read keypad. Needs to be called everytime when keypad needs to be read
 #sendSensorInt() -indicates to ard the start of navigation. to be called before sending ard x y coordinates.
@@ -26,7 +26,6 @@ navigation = 0
 # get JSON response from the url and parse to data
 #-----------------------------------------------------------------------------
 def initialise():
-<<<<<<< HEAD
     #audio welcome message
     #audio Press 1 to input new map, Press 2 to load Com1 Level 2\n
     control = 0
@@ -34,10 +33,6 @@ def initialise():
         sendKeyInt()
         control = readKeypad()
         control = int(input("Press 1 to input new map, Press 2 to load Com1 Level 2\n")) #to be removed
-=======
-    control = int(input("Press 1 to input new map, Press 2 to load Com1 Level 2\n"))
-    #os.system(espeak -v+f3 -s100 -f /home/pi/Vision/Intro.txt --stdout | aplay)
->>>>>>> soft-3002/master
 
     while control == 1:
         sendKeyInt()
@@ -102,7 +97,7 @@ def main():
             #audio "Input destination node id"
             sendKeyInt()
             destinationNodeId = readKeypad()
-            destinationNodeId = int(input("Input start node id"))
+            destinationNodeId = int(input("Input destination node id"))
         destinationNode = nodeList.getNodeById(destinationNodeId)
         
         cost, path = shortestPath(aList.getGraph(), startNode.id, destinationNode.id)
@@ -120,7 +115,7 @@ def main():
             while (isReached(currentX, currentY, targetNode.x, targetNode.y) == False):
   
                 time.sleep(1) #assume 1 step 1 second
-                readData() #update currentXYH
+                getLocData() #update currentXYH
                
                 direction, degree  = computeDirection(currentHeading, currentX, currentY, targetNode.x, targetNode.y, nodeList.north)
                 print (direction, degree)
