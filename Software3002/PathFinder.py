@@ -26,25 +26,36 @@ navigation = 0
 # get JSON response from the url and parse to data
 #-----------------------------------------------------------------------------
 def initialise():
-    control = int(input("Press 1 to input new map, Press 2 to load Com1 Level 2\n"))
-    espeak -v+f3 -s100 -f /home/pi/Vision/Intro.txt --stdout | aplay
+    #audio welcome message
+    #audio Press 1 to input new map, Press 2 to load Com1 Level 2\n
+    control = 0
+    while control != 1 and control != 2 :
+        sendKeyInt()
+        control = readKeypad()
+        control = int(input("Press 1 to input new map, Press 2 to load Com1 Level 2\n")) #to be removed
 
-    if control == 1:
+    while control == 1:
+        sendKeyInt()
+        buildingName = readKeypad()
         buildingName = str(raw_input("Enter building name\n"))
+        sendKeyInt()
+        level = readKeypad()
         level = int(raw_input("Enter level\n"))
         #buildingName = "oksure"
         #level = 1337
-
         mapID = [buildingName, level]
         params = dict(Building = buildingName, Level = level)
         response = requests.get(url=url, params = params)
         data = response.json()
-
-    elif control == 2:
+        if data["info"] is not None:
+            break
+        #audio please enter valid building parameters
+        
+    if control == 2:
         json_data=open('data.txt')
         data = json.load(json_data)
         json_data.close()
-    
+  
     #FloorPlanDatabase = FloorPlanList()  #initialise database
     #myFloorPlan = FloorPlan(mapID, data)    
     #FloorPlanDatabase.addFloorPlan(myFloorPlan) #add floor plan to database
@@ -79,16 +90,34 @@ def main():
     
     aList = AdjList(nodeList)        #constructs adjlist from node list
 
+    #audio "Press 1 to begin navigating"
+    sendKeyInt()
+    currentInstruction = readKeypad()
     currentInstruction = int(input("Press 1 to begin navigating"))
     
     if (currentInstruction == 1):
-        startNode = nodeList.getNodeById(int(input("Input start node id")))
-        destinationNode = nodeList.getNodeById(int(input("Input destination node id")))
+        startNodeId = -1
+        destinationNodeId = -1
+        while startNodeId not in nodeList:
+            #audio "Input start node id"
+            sendKeyInt()
+            startNodeId = readKeypad()
+            startNodeId = int(input("Input start node id"))
+        startNode = nodeList.getNodeById(startNodeId)
+
+        while destinationNodeId not in nodeList:
+            #audio "Input destination node id"
+            sendKeyInt()
+            destinationNodeId = readKeypad()
+            destinationNodeId = int(input("Input start node id"))
+        destinationNode = nodeList.getNodeById(destinationNodeId)
         
         cost, path = shortestPath(aList.getGraph(), startNode.id, destinationNode.id)
-        
         currentX = startNode.x
         currentY = startNode.y
+
+        sendSensorInt()   #indicate to ard to read sensor, then send ard currentXY
+        #sendXY
         i = 1
 
         while (isReached(currentX, currentY, destinationNode.x, destinationNode.y) == False):
@@ -98,6 +127,7 @@ def main():
             while (isReached(currentX, currentY, targetNode.x, targetNode.y) == False):
   
                 time.sleep(1) #assume 1 step 1 second
+                readData() #update currentXYH
                
                 direction, degree  = computeDirection(currentHeading, currentX, currentY, targetNode.x, targetNode.y, nodeList.north)
                 print (direction, degree)
@@ -249,4 +279,4 @@ class AdjList(object):
 
 
 #-----------------------------------------------------------------------------
-#main()
+main()
