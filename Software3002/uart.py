@@ -16,11 +16,11 @@ def getLocData():
     
 def readKeypad():
     
-    return
+    return "stub string"
 
 def sendKeyInt():
 
-    return
+    return 
 
 def sendSensorInt():
     
@@ -28,7 +28,7 @@ def sendSensorInt():
 
 def readUART():
 
-    return
+    return "stub string"
 
 def putBuffer():
 
