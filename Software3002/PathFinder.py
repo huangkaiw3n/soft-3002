@@ -1,12 +1,14 @@
 # main module of the system
-
 from Settings import *
 from Uart import *
 
+#readUART() - reads the receive buffer and returns a string
+#putBuffer() puts the string returned by readUART into the buffer
 #getLocData() -updates currentXYHeading
 #readKeypad() -returns a string with # at the end. eg. "12#"
 #sendKeyInt() -indicates to ard to read keypad. Needs to be called everytime when keypad needs to be read
 #sendSensorInt() -indicates to ard the start of navigation. to be called before sending ard x y coordinates.
+#
 
 # rPi GPIO interrupt will activate UART read on rPi's side
 # flag to tell UART handler whether we are taking in currentXYheading during
@@ -26,33 +28,51 @@ navigation = 0
 # get JSON response from the url and parse to data
 #-----------------------------------------------------------------------------
 def initialise():
-    #audio welcome message
-    #audio Press 1 to input new map, Press 2 to load Com1 Level 2\n
-    control = 0
-    while control != 1 and control != 2 :
-        sendKeyInt()
-        control = readKeypad()
-        control = int(input("Press 1 to input new map, Press 2 to load Com1 Level 2\n")) #to be removed
+    global inStr
+    os.system(espeak -v+f3 -s100 -f /home/pi/Vision/Intro.txt --stdout | aplay)
+    os.system(espeak -v+f3 -s100 -f /home/pi/Vision/StartingPrompt.txt --stdout | aplay)
 
-    while control == 1:
+    control = ""
+    sendKeyInt()
+    while control != "1#" and control != "2#" :
+        if control != "":
+            sendKeyInt()
+        inStr = readUART()
+        putBuffer()
+        control = readKeypad()
+
+    buildingName = ""
+    level = ""
+    while control == "1#":
         sendKeyInt()
-        buildingName = readKeypad()
-        buildingName = str(raw_input("Enter building name\n"))
+        while buildingName == "" :
+            inStr = readUART()
+            putBuffer() 
+            buildingName = readKeypad()[:-1]
         sendKeyInt()
-        level = readKeypad()
-        level = int(raw_input("Enter level\n"))
-        #buildingName = "oksure"
-        #level = 1337
-        mapID = [buildingName, level]
-        params = dict(Building = buildingName, Level = level)
-        response = requests.get(url=url, params = params)
+        while level == "" :
+            inStr = readUART()
+            putBuffer()
+            level = readKeypad()[:-1]
+        mapID = [buildingName, int(level)]
+        params = dict(Building = buildingName, Level = int(level))
+        if (internet_on() == True):
+            response = requests.get(url=url, params = params)
+        else:
+            time.sleep(5)
+            if (internet_on() == False):
+                os.system(espeak -v+f3 -s100 -f /home/pi/Vision/InternetOff.txt --stdout | aplay)
+                control = "2#"
+                break
+            else:
+                response = requests.get(url=url, params = params)
         data = response.json()
         if data["info"] is not None:
             break
-        #audio please enter valid building parameters
+        os.system(espeak -v+f3 -s100 -f /home/pi/Vision/WrongMapInfo.txt --stdout | aplay)
         
-    if control == 2:
-        json_data=open('data.txt')
+    if control == "2#":
+        json_data=open('com.txt')
         data = json.load(json_data)
         json_data.close()
   
@@ -68,37 +88,59 @@ def initialise():
 #-----------------------------------------------------------------------------
 def main():
     data = initialise()
-    pprint(data)
+    pprint(data) #to be removed
     global currentX
     global currentY
     global currentHeading
 
-    nodeList = LocationNodeList(data["map"], data["info"])
-    wifiList = WifiNodeList(data["wifi"])
+    locationNodeList = LocationNodeList(data["map"], data["info"])
+    wifiNodeList = WifiNodeList(data["wifi"])
     
-    aList = AdjList(nodeList)        #constructs adjlist from node list
+    aList = AdjList(locationNodeList)        #constructs adjlist from node list
 
-    #audio "Press 1 to begin navigating"
+    currentInstruction = ""
+    os.system(espeak -v+f3 -s100 -f /home/pi/Vision/Begin.txt --stdout | aplay)
     sendKeyInt()
-    currentInstruction = readKeypad()
-    currentInstruction = int(input("Press 1 to begin navigating"))
+    while currentInstruction != "1#":
+        if currentInstruction != "":
+            sendKeyInt()     
+        inStr = readUART()
+        putBuffer() 
+        currentInstruction = readKeypad()
     
-    if (currentInstruction == 1):
+    if (currentInstruction == "1#"):
         startNodeId = -1
         destinationNodeId = -1
-        while startNodeId not in nodeList:
-            #audio "Input start node id"
-            sendKeyInt()
-            startNodeId = readKeypad()
-            startNodeId = int(input("Input start node id"))
-        startNode = nodeList.getNodeById(startNodeId)
+        temp = ""
+        os.system(espeak -v+f3 -s100 -f /home/pi/Vision/CurrentNode.txt --stdout | aplay)
+        sendKeyInt()
+        while (True):
+            if temp != "":
+                startNodeId = int(temp[:-1])
+                if (startNodeId in locationNodeList.list):
+                    break
+                else:
+                    os.system(espeak -v+f3 -s100 -f /home/pi/Vision/WrongNodeId.txt --stdout | aplay)
+                    sendKeyInt()
+            inStr = readUART()
+            putBuffer() 
+            temp = readKeypad()
 
-        while destinationNodeId not in nodeList:
-            #audio "Input destination node id"
-            sendKeyInt()
-            destinationNodeId = readKeypad()
-            destinationNodeId = int(input("Input destination node id"))
-        destinationNode = nodeList.getNodeById(destinationNodeId)
+        temp = ""
+        while (True):
+            if temp != "":
+                destinationNodeId = int(temp[:-1])
+                if (destinationNodeId in locationNodeList.list):
+                    break
+                else:
+                    os.system(espeak -v+f3 -s100 -f /home/pi/Vision/WrongNodeId.txt --stdout | aplay)
+                    sendKeyInt()
+            inStr = readUART()
+            putBuffer() 
+            temp = readKeypad()
+
+        startNode = locationNodeList.getNodeById(startNodeId)
+        destinationNode = locationNodeList.getNodeById(destinationNodeId)
         
         cost, path = shortestPath(aList.getGraph(), startNode.id, destinationNode.id)
         currentX = startNode.x
@@ -242,28 +284,6 @@ def shortestPath(graph, start, end):
                 return cost, path
             for (next, c) in graph[v].iteritems():
                 heapq.heappush(queue, (cost + c, next, path))
-
-
-
-#-----------------------------------------------------------------------------
-# AdjList class store the map information
-# only includes LocationNodes
-#----------------------------------------------------------------------------- 
-class AdjList(object):
-    def __init__(self, nlist):
-        self.graph = {}
-        
-        for i in range(1, nlist.getNumNodes()+1):
-            tempNode1 = nlist.getNodeById(i)
-            adj = {}
-            for j in range(0, tempNode1.getNumNbr()):
-                tempNode2 = nlist.getNodeById(tempNode1.getNbrId(j))
-                adj[tempNode1.getNbrId(j)] = tempNode1.distanceTo(tempNode2)
-        
-            self.graph[i] = adj
-
-    def getGraph(self):
-        return self.graph
 
 
 #-----------------------------------------------------------------------------

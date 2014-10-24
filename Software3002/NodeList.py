@@ -3,20 +3,20 @@ from Node import *
 class NodeList(object):
     def __init__(self):
         self.numNodes = 0
-        self.NodeList = {}
+        self.list = {}
         
     def __contains__(self, node):
-        return node in self.NodeList
+        return node in self.list
     
     def addNode(self, node):
         self.numNodes = self.numNodes + 1
-        self.NodeList[node.id] = node
+        self.list[node.id] = node
          
     def getNodeById (self, id):
-        return self.NodeList[id]
+        return self.list[id]
     
     def getNodeByName(self, name):
-        for node_i in self.NodeList:
+        for node_i in self.list:
             if node_i.name == name:
                 return node_i
     
@@ -49,6 +49,27 @@ class WifiNodeList(NodeList):
             self.addNode(myNode)
             
     def getNodeByMacAddr(self, macAddr):
-        for node_i in self.NodeList:
+        for node_i in self.list:
             if node_i.macAddr == macAddr:
                 return node_i 
+
+
+#-----------------------------------------------------------------------------
+# AdjList class store the map information
+# only includes LocationNodes
+#----------------------------------------------------------------------------- 
+class AdjList(object):
+    def __init__(self, nlist):
+        self.graph = {}
+        
+        for i in range(1, nlist.getNumNodes()+1):
+            tempNode1 = nlist.getNodeById(i)
+            adj = {}
+            for j in range(0, tempNode1.getNumNbr()):
+                tempNode2 = nlist.getNodeById(tempNode1.getNbrId(j))
+                adj[tempNode1.getNbrId(j)] = tempNode1.distanceTo(tempNode2)
+        
+            self.graph[i] = adj
+
+    def getGraph(self):
+        return self.graph

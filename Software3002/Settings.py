@@ -5,6 +5,7 @@ import requests, heapq, time, json, os
 from pprint import pprint
 from NodeList import *
 from FloorPlanManager import *
+from WiFi import internet_on
 
 #http://showmyway.comp.nus.edu.sg/getMapInfoGraphView.php?Building=AAA&Level=BBB
 url = "http://ShowMyWay.comp.nus.edu.sg/getMapInfo.php"
@@ -21,3 +22,5 @@ currentX = 0
 currentY = 0
 currentHeading = 0
 #-----------------------------------------------------------------------------
+# String to hold data from uart
+inStr = "" 

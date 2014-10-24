@@ -9,8 +9,15 @@
     
     
 #sniff(iface="mon0", prn = PacketHandler)
-
+import urllib2
 import math
+
+def internet_on():
+    try:
+        response=urllib2.urlopen('http://74.125.228.100',timeout=1)
+        return True
+    except urllib2.URLError as err: pass
+    return False
 
 # reference:
 # http://stackoverflow.com/questions/16176656/trilateration-and-locating-the-point-x-y-z
@@ -71,5 +78,4 @@ class WifiPosition(object):
         self.x = x
         self.y = y
         self.r = radius #radius
-        
-
+       
