@@ -29,8 +29,8 @@ navigation = 0
 #-----------------------------------------------------------------------------
 def initialise():
     global inStr
-    #os.system(espeak -v+f3 -s100 -f /home/pi/Vision/Intro.txt --stdout | aplay)
-    #os.system(espeak -v+f3 -s100 -f /home/pi/Vision/StartingPrompt.txt --stdout | aplay)
+    #os.system(espeak -v+f3 -s100 -f /home/pi/soft-3002/Software3002/Audio/Intro.txt --stdout | aplay)
+    #os.system(espeak -v+f3 -s100 -f /home/pi/soft-3002/Software3002/Audio/StartingPrompt.txt --stdout | aplay)
 
     control = ""
     sendKeyInt()
@@ -61,7 +61,7 @@ def initialise():
         else:
             time.sleep(5)
             if (internet_on() == False):
-                #os.system(espeak -v+f3 -s100 -f /home/pi/Vision/InternetOff.txt --stdout | aplay)
+                #os.system(espeak -v+f3 -s100 -f /home/pi/soft-3002/Software3002/Audio/InternetOff.txt --stdout | aplay)
                 control = "2#"
                 break
             else:
@@ -69,7 +69,7 @@ def initialise():
         data = response.json()
         if data["info"] is not None:
             break
-        #os.system(espeak -v+f3 -s100 -f /home/pi/Vision/WrongMapInfo.txt --stdout | aplay)
+        #os.system(espeak -v+f3 -s100 -f /home/pi/soft-3002/Software3002/Audio/WrongMapInfo.txt --stdout | aplay)
         
     if control == "2#":
         json_data=open('com.txt')
@@ -99,7 +99,7 @@ def main():
     aList = AdjList(locationNodeList)        #constructs adjlist from node list
 
     currentInstruction = ""
-    #os.system(espeak -v+f3 -s100 -f /home/pi/Vision/Begin.txt --stdout | aplay)
+    #os.system(espeak -v+f3 -s100 -f /home/pi/soft-3002/Software3002/Audio/Begin.txt --stdout | aplay)
     sendKeyInt()
     while currentInstruction != "1#":
         if currentInstruction != "":
@@ -112,7 +112,7 @@ def main():
         startNodeId = -1
         destinationNodeId = -1
         temp = ""
-        #os.system(espeak -v+f3 -s100 -f /home/pi/Vision/CurrentNode.txt --stdout | aplay)
+        #os.system(espeak -v+f3 -s100 -f /home/pi/soft-3002/Software3002/Audio/CurrentNode.txt --stdout | aplay)
         sendKeyInt()
         while (True):
             if temp != "":
@@ -120,7 +120,7 @@ def main():
                 if (startNodeId in locationNodeList.list):
                     break
                 else:
-                    #os.system(espeak -v+f3 -s100 -f /home/pi/Vision/WrongNodeId.txt --stdout | aplay)
+                    #os.system(espeak -v+f3 -s100 -f /home/pi/soft-3002/Software3002/Audio/WrongNodeId.txt --stdout | aplay)
                     sendKeyInt()
             inStr = readUART()
             putBuffer() 
@@ -133,7 +133,7 @@ def main():
                 if (destinationNodeId in locationNodeList.list):
                     break
                 else:
-                    #os.system(espeak -v+f3 -s100 -f /home/pi/Vision/WrongNodeId.txt --stdout | aplay)
+                    #os.system(espeak -v+f3 -s100 -f /home/pi/soft-3002/Software3002/Audio/WrongNodeId.txt --stdout | aplay)
                     sendKeyInt()
             inStr = readUART()
             putBuffer() 
