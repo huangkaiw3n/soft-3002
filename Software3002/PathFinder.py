@@ -258,9 +258,9 @@ def getKeyData():
             if(myList[x] == "#"):
                 myList[0:] = []
                 return dataStr
-        return None
+        return ""
     else:
-        return None
+        return ""
 
 def getLocData():
     global bufferIndex
@@ -394,6 +394,8 @@ def main():
             temp = getKeyData()
 
         temp = ""
+        os.system('espeak -v+f3 -s100 -f /home/pi/soft-3002/Software3002/Audio/DesNode.txt --stdout | aplay')
+        sendKeyInt()
         while (True):
             if temp != "":
                 destinationNodeId = int(temp[:-1])
