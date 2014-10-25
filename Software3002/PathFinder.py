@@ -81,6 +81,8 @@ def initialise():
         if data["info"] is not None:
             break
         os.system('espeak -v+f3 -s100 -f /home/pi/soft-3002/Software3002/Audio/WrongMapInfo.txt --stdout | aplay')
+        buildingName = ""
+        level = ""
         
     if control == "2#":
         json_data=open('com.txt')
