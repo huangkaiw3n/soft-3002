@@ -357,7 +357,9 @@ def say(something):
 # main
 #-----------------------------------------------------------------------------
 def main():
+    os.system('espeak -v+f3 -s100 -f /home/pi/soft-3002/Software3002/Audio/AttemptHandShake.txt --stdout | aplay')
     handShake()
+    os.system('espeak -v+f3 -s100 -f /home/pi/soft-3002/Software3002/Audio/HandShakeCompleted.txt --stdout | aplay')
     data = initialise()
     #pprint(data) #to be removed
     global currentX
