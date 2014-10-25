@@ -55,13 +55,13 @@ def initialise():
     buildingName = ""
     level = ""
     while control == "1#":
-        sendKeyInt()
         os.system('espeak -v+f3 -s100 -f /home/pi/soft-3002/Software3002/Audio/BuildingName.txt --stdout | aplay')
+        sendKeyInt()
         while buildingName == "" :
             UART_Buffer()
             buildingName = getKeyData()[:-1]
-        sendKeyInt()
         os.system('espeak -v+f3 -s100 -f /home/pi/soft-3002/Software3002/Audio/BuildingLevel.txt --stdout | aplay')
+        sendKeyInt()
         while level == "" :
             UART_Buffer()
             level = getKeyData()[:-1]
