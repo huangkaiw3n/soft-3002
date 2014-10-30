@@ -377,7 +377,7 @@ def main():
     currentInstruction = ""
     os.system('espeak -v+f3 -s100 -f /home/pi/soft-3002/Software3002/Audio/Begin.txt --stdout | aplay')
     sendKeyInt()
-    while currentInstruction != "1#":
+    while currentInstruction != "1#" and currentInstruction != "2#": #yet to complete change yet. #2 will be change map.
         if currentInstruction != "":
             sendKeyInt()     
         UART_Buffer()
@@ -422,6 +422,16 @@ def main():
         currentY = startNode.y
 
         #wait till after they spin you
+        beginNav = ""
+        temp = "Press one to start navigation"
+        say(temp)
+        sendKeyInt()
+        while beginNav != "1#": #for user to begin after keying in start and end.
+            if beginNav != "":
+                say(temp)
+                sendKeyInt()
+            UART_Buffer()
+            beginNav = getKeyData()
 
         sendSensorInt()   #indicate to ard to read sensor, then send ard currentXY
         parseInfo(18, currentX)
@@ -429,7 +439,7 @@ def main():
         parseInfo(48, locationNodeList.north)
         i = 1
         
-        
+   
         while (isReached(currentX, currentY, destinationNode.x, destinationNode.y) == False):
             
             targetNode = locationNodeList.getNodeById(path[i])

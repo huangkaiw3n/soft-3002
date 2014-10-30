@@ -1,1 +1,1 @@
-Press one to begin navigation
+Press one to navigate, Press two to choose another map.
