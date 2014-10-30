@@ -457,5 +457,8 @@ def main():
 
             if targetNode != destinationNode : #prevent overflow
                 i = i + 1 
+        
+        temp = "Reach destination " + destinationNode.name
+        say(temp)
 
 main()
