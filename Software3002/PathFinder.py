@@ -391,7 +391,7 @@ def main():
         while (True):
             if temp != "":
                 startNodeId = int(temp[:-1])
-                if (startNodeId in locationNodeList.list):
+                if ((isinstance(startNodeId,int) == True) and startNodeId in locationNodeList.list):
                     break
                 else:
                     os.system('espeak -v+f3 -s100 -f /home/pi/soft-3002/Software3002/Audio/WrongNodeId.txt --stdout | aplay')
@@ -405,7 +405,7 @@ def main():
         while (True):
             if temp != "":
                 destinationNodeId = int(temp[:-1])
-                if (destinationNodeId in locationNodeList.list):
+                if ((isinstance(destinationNodeId,int) == True) and destinationNodeId in locationNodeList.list):
                     break
                 else:
                     os.system('espeak -v+f3 -s100 -f /home/pi/soft-3002/Software3002/Audio/WrongNodeId.txt --stdout | aplay')
@@ -457,9 +457,5 @@ def main():
 
             if targetNode != destinationNode : #prevent overflow
                 i = i + 1 
-    #else:
-     #   print ("test") 
-
-
 
 main()
