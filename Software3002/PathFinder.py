@@ -79,6 +79,7 @@ def initialise():
                 response = requests.get(url=url, params = params)
         data = response.json()
         if data["info"] is not None:
+            #map name loaded
             break
         os.system('espeak -v+f3 -s100 -f /home/pi/soft-3002/Software3002/Audio/WrongMapInfo.txt --stdout | aplay')
         buildingName = ""
@@ -420,12 +421,15 @@ def main():
         currentX = startNode.x
         currentY = startNode.y
 
+        #wait till after they spin you
+
         sendSensorInt()   #indicate to ard to read sensor, then send ard currentXY
         parseInfo(18, currentX)
         parseInfo(28, currentY)
         parseInfo(48, locationNodeList.north)
         i = 1
-
+        
+        
         while (isReached(currentX, currentY, destinationNode.x, destinationNode.y) == False):
             
             targetNode = locationNodeList.getNodeById(path[i])
