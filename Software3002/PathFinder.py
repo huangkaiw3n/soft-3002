@@ -309,17 +309,17 @@ def parseInfo(iden, data):
     #dataSend = dataSend + str(unichr(data%100))
     dataSend = str(unichr(iden))
     Wire.serialPuts(serialPort, dataSend)
-    if(data/10000 == 0):
+    if(int(data/10000) == 0):
         Wire.serialPutchar(serialPort, 00)
     else:
         dataSend = str(unichr(int(data/10000)))
         Wire.serialPuts(serialPort, dataSend)
-    if((data/100)%100 == 0):
+    if(int((data/100)%100) == 0):
         Wire.serialPutchar(serialPort, 00)
     else:
         dataSend = str(unichr(int((data/100)%100)))
         Wire.serialPuts(serialPort, dataSend)
-    if(data%100 == 0):
+    if(int(data%100) == 0):
         Wire.serialPutchar(serialPort, 00)
     else:
         dataSend = str(unichr(int(data%100)))
