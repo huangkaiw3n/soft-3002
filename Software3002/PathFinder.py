@@ -476,7 +476,8 @@ def main():
                 elif direction == "turn right":
                     parseInfo(29, degree)
                 else:
-                    os.system('espeak -v+f3 -s100 -f /home/pi/soft-3002/Software3002/Audio/GoStraight.txt --stdout | aplay')
+                    #os.system('espeak -v+f3 -s100 -f /home/pi/soft-3002/Software3002/Audio/GoStraight.txt --stdout | aplay')
+                    print "Go straight\n"
 
                 #just for testing. to be updated through uart by arduino
                 #currentX = int(input("Input currentX\n"))
