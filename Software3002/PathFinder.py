@@ -46,6 +46,7 @@ def initialise():
 
     control = ""
     sendKeyInt()
+    
     while control != "1#" and control != "2#" :
         if control != "":
             sendKeyInt()
@@ -60,13 +61,24 @@ def initialise():
         while buildingName == "" :
             UART_Buffer()
             buildingName = getKeyData()[:-1]
+            
         os.system('espeak -v+f3 -s100 -f /home/pi/soft-3002/Software3002/Audio/BuildingLevel.txt --stdout | aplay')
         sendKeyInt()
-        while level == "" :
-            UART_Buffer()
-            level = getKeyData()[:-1]
+        
+        while (True):
+            while level == "" :
+                UART_Buffer()
+                level = getKeyData()[:-1]
+                
+            try:
+                params = dict(Building = buildingName, Level = int(level))
+                break
+            except ValueError:
+                os.system('espeak -v+f3 -s100 -f /home/pi/soft-3002/Software3002/Audio/InvalidLevel.txt --stdout | aplay')
+                level = ""
+                sendKeyInt()
+        
         mapID = [buildingName, int(level)]
-        params = dict(Building = buildingName, Level = int(level))
         if (internet_on() == True):
             response = requests.get(url=url, params = params)
         else:
@@ -211,7 +223,7 @@ def shortestPath(graph, start, end):
             path = path + [v]
             seen.add(v)
             if v == end:
-                return cost, path
+                return path  #remove "cost"
             for (next, c) in graph[v].iteritems():
                 heapq.heappush(queue, (cost + c, next, path))
 
@@ -391,11 +403,15 @@ def main():
         sendKeyInt()
         while (True):
             if temp != "":
-                startNodeId = int(temp[:-1])
-                if ((isinstance(startNodeId,int) == True) and startNodeId in locationNodeList.list):
-                    break
-                else:
-                    os.system('espeak -v+f3 -s100 -f /home/pi/soft-3002/Software3002/Audio/WrongNodeId.txt --stdout | aplay')
+                try:   
+                    startNodeId = int(temp[:-1])
+                    if (startNodeId in locationNodeList.list):
+                        break
+                    else:
+                        os.system('espeak -v+f3 -s100 -f /home/pi/soft-3002/Software3002/Audio/WrongNodeId.txt --stdout | aplay')
+                        sendKeyInt()
+                except ValueError:
+                    os.system('espeak -v+f3 -s100 -f /home/pi/soft-3002/Software3002/Audio/InvalidNodeID.txt --stdout | aplay')
                     sendKeyInt()
             UART_Buffer()
             temp = getKeyData()
@@ -405,11 +421,15 @@ def main():
         sendKeyInt()
         while (True):
             if temp != "":
-                destinationNodeId = int(temp[:-1])
-                if ((isinstance(destinationNodeId,int) == True) and destinationNodeId in locationNodeList.list):
-                    break
-                else:
-                    os.system('espeak -v+f3 -s100 -f /home/pi/soft-3002/Software3002/Audio/WrongNodeId.txt --stdout | aplay')
+                try:
+                    destinationNodeId = int(temp[:-1])
+                    if (destinationNodeId in locationNodeList.list):
+                        break
+                    else:
+                        os.system('espeak -v+f3 -s100 -f /home/pi/soft-3002/Software3002/Audio/WrongNodeId.txt --stdout | aplay')
+                        sendKeyInt()
+                except ValueError:
+                    os.system('espeak -v+f3 -s100 -f /home/pi/soft-3002/Software3002/Audio/InvalidNodeID.txt --stdout | aplay')
                     sendKeyInt()
             UART_Buffer()
             temp = getKeyData()
@@ -417,18 +437,17 @@ def main():
         startNode = locationNodeList.getNodeById(startNodeId)
         destinationNode = locationNodeList.getNodeById(destinationNodeId)
         
-        cost, path = shortestPath(aList.getGraph(), startNode.id, destinationNode.id)
+        path = shortestPath(aList.getGraph(), startNode.id, destinationNode.id)
         currentX = startNode.x
         currentY = startNode.y
 
         #wait till after they spin you
         beginNav = ""
-        temp = "Press one to start navigation"
-        say(temp)
+        say("Press one to start navigation")
         sendKeyInt()
         while beginNav != "1#": #for user to begin after keying in start and end.
             if beginNav != "":
-                say(temp)
+                say("Press one to start navigation")
                 sendKeyInt()
             UART_Buffer()
             beginNav = getKeyData()
@@ -446,7 +465,7 @@ def main():
             
             while (isReached(currentX, currentY, targetNode.x, targetNode.y) == False):
   
-                time.sleep(1) #assume 1 step 1 second
+                #time.sleep(1) #assume 1 step 1 second
                 UART_Buffer()
                 getLocData() #update currentXYH
                
@@ -466,13 +485,11 @@ def main():
                 #currentX, currentY = updateCurrentLocation(currentX, currentY, currentHeading, 1)
             
             #output to audio here: 
-            temp = "Reached Node " + str(path[i])
-            say(temp)
+            say("Reached Node " + str(path[i]))
 
             if targetNode != destinationNode : #prevent overflow
                 i = i + 1 
-        
-        temp = "Reach destination " + destinationNode.name
-        say(temp)
+
+        say("Reach destination " + destinationNode.name)
 
 main()

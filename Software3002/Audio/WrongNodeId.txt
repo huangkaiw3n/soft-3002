@@ -1,1 +1,1 @@
-Please enter a valid node I D.
+Please enter an existing node I D.

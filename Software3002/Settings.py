@@ -12,6 +12,7 @@ from FloorPlanManager import *
 from WiFi import internet_on
 
 #http://showmyway.comp.nus.edu.sg/getMapInfoGraphView.php?Building=AAA&Level=BBB
+#http://showmyway.comp.nus.edu.sg/gMIGV.php?Building=1&Level=2
 url = "http://ShowMyWay.comp.nus.edu.sg/getMapInfo.php"
 
 stepLength = 50 #cm #might no longer be needed
