@@ -49,6 +49,7 @@ def initialise():
     
     while control != "1#" and control != "2#" :
         if control != "":
+            say("Please enter 1 or 2 only.")
             sendKeyInt()
         UART_Buffer()
         control = getKeyData()
@@ -396,43 +397,56 @@ def main():
         currentInstruction = getKeyData()
     
     while (currentInstruction == "1#"):   #edited to return here when a navigation has completed
-        startNodeId = -1
-        destinationNodeId = -1
-        temp = ""
-        os.system('espeak -v+f3 -s100 -f /home/pi/soft-3002/Software3002/Audio/CurrentNode.txt --stdout | aplay')
-        sendKeyInt()
-        while (True):
-            if temp != "":
-                try:   
-                    startNodeId = int(temp[:-1])
-                    if (startNodeId in locationNodeList.list):
-                        break
-                    else:
-                        os.system('espeak -v+f3 -s100 -f /home/pi/soft-3002/Software3002/Audio/WrongNodeId.txt --stdout | aplay')
+        nodeConfirm = ""
+        while (nodeConfirm != "1#"):
+            startNodeId = -1
+            destinationNodeId = -1
+            temp = ""
+            os.system('espeak -v+f3 -s100 -f /home/pi/soft-3002/Software3002/Audio/CurrentNode.txt --stdout | aplay')
+            sendKeyInt()
+            while (True):
+                if temp != "":
+                    try:   
+                        startNodeId = int(temp[:-1])
+                        if (startNodeId in locationNodeList.list):
+                            break
+                        else:
+                            os.system('espeak -v+f3 -s100 -f /home/pi/soft-3002/Software3002/Audio/WrongNodeId.txt --stdout | aplay')
+                            sendKeyInt()
+                    except ValueError:
+                        os.system('espeak -v+f3 -s100 -f /home/pi/soft-3002/Software3002/Audio/InvalidNodeID.txt --stdout | aplay')
                         sendKeyInt()
-                except ValueError:
-                    os.system('espeak -v+f3 -s100 -f /home/pi/soft-3002/Software3002/Audio/InvalidNodeID.txt --stdout | aplay')
-                    sendKeyInt()
-            UART_Buffer()
-            temp = getKeyData()
+                UART_Buffer()
+                temp = getKeyData()
 
-        temp = ""
-        os.system('espeak -v+f3 -s100 -f /home/pi/soft-3002/Software3002/Audio/DesNode.txt --stdout | aplay')
-        sendKeyInt()
-        while (True):
-            if temp != "":
-                try:
-                    destinationNodeId = int(temp[:-1])
-                    if (destinationNodeId in locationNodeList.list):
-                        break
-                    else:
-                        os.system('espeak -v+f3 -s100 -f /home/pi/soft-3002/Software3002/Audio/WrongNodeId.txt --stdout | aplay')
+            temp = ""
+            os.system('espeak -v+f3 -s100 -f /home/pi/soft-3002/Software3002/Audio/DesNode.txt --stdout | aplay')
+            sendKeyInt()
+            while (True):
+                if temp != "":
+                    try:
+                        destinationNodeId = int(temp[:-1])
+                        if (destinationNodeId in locationNodeList.list):
+                            break
+                        else:
+                            os.system('espeak -v+f3 -s100 -f /home/pi/soft-3002/Software3002/Audio/WrongNodeId.txt --stdout | aplay')
+                            sendKeyInt()
+                    except ValueError:
+                        os.system('espeak -v+f3 -s100 -f /home/pi/soft-3002/Software3002/Audio/InvalidNodeID.txt --stdout | aplay')
                         sendKeyInt()
-                except ValueError:
-                    os.system('espeak -v+f3 -s100 -f /home/pi/soft-3002/Software3002/Audio/InvalidNodeID.txt --stdout | aplay')
+                UART_Buffer()
+                temp = getKeyData()
+
+            say("Node " + str(startNodeId) + " to " + "Node " + str(destinationNodeId))
+            say("To confirm, press 1, otherwise, press 2 to re-enter.")
+            nodeConfirm = ""
+            sendKeyInt()
+            while nodeConfirm != "1#" and nodeConfirm != "2#" :
+                if nodeConfirm != "":
+                    say("Please enter 1 or 2 only.")
                     sendKeyInt()
-            UART_Buffer()
-            temp = getKeyData()
+                UART_Buffer()
+                nodeConfirm = getKeyData()
 
         startNode = locationNodeList.getNodeById(startNodeId)
         destinationNode = locationNodeList.getNodeById(destinationNodeId)
@@ -457,9 +471,12 @@ def main():
         parseInfo(28, currentY)
         parseInfo(48, locationNodeList.north)
         i = 1
-        
-	startTime = time.time()
-   
+        startTime = time.time()
+
+        leftFlag = 0
+        rightFlag = 0
+        time.sleep(1) #allow time for arduino to get average from heading.
+
         while (isReached(currentX, currentY, destinationNode.x, destinationNode.y) == False):
             
             targetNode = locationNodeList.getNodeById(path[i])
@@ -473,15 +490,23 @@ def main():
                 direction, degree  = computeDirection(currentHeading, currentX, currentY, targetNode.x, targetNode.y, locationNodeList.north)
                 print (direction, degree)
                 	
-		if(time.time() - startTime > 0.99):
-                    startTime = time.time()
-	            if direction == "turn left":
-                        parseInfo(19, degree)
-                    elif direction == "turn right":
-                        parseInfo(29, degree)
-                    else:
-                        #os.system('espeak -v+f3 -s100 -f /home/pi/soft-3002/Software3002/Audio/GoStraight.txt --stdout | aplay')
-                        print "Go straight\n"
+                if direction == "turn left" and leftFlag == 0:
+                    #parseInfo(19, degree)
+                    leftFlag = 1
+                    say("Left")
+                elif direction == "turn right" and rightFlag == 0:
+                    #parseInfo(29, degree)
+                    rightFlag = 1
+                    say("Right")
+                elif direction == "straight":
+                    #os.system('espeak -v+f3 -s100 -f /home/pi/soft-3002/Software3002/Audio/GoStraight.txt --stdout | aplay')
+                    leftFlag = 0
+                    rightFlag = 0
+                    say("Straight")
+                elif leftFlag == 1 and rightFlag == 1:
+                    leftFlag = 0
+                    rightFlag = 0
+
 
                 #just for testing. to be updated through uart by arduino
                 #currentX = int(input("Input currentX\n"))
@@ -495,6 +520,6 @@ def main():
             if targetNode != destinationNode : #prevent overflow
                 i = i + 1 
 
-        say("Reach destination " + destinationNode.name)
+        say("Reached destination " + destinationNode.name)
 
 main()
