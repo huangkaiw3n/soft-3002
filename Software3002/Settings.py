@@ -20,4 +20,4 @@ stepLength = 50 #cm #might no longer be needed
 # Allowable distance from target destination to be considered as reached
 offsetDistance = 50
 # Allowable difference in heading to considered as acceptable
-offSetAngle = 15.0
+offSetAngle = 4.0

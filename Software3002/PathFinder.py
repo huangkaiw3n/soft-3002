@@ -458,6 +458,7 @@ def main():
         parseInfo(48, locationNodeList.north)
         i = 1
         
+	startTime = time.time()
    
         while (isReached(currentX, currentY, destinationNode.x, destinationNode.y) == False):
             
@@ -465,19 +466,22 @@ def main():
             
             while (isReached(currentX, currentY, targetNode.x, targetNode.y) == False):
   
-                #time.sleep(1) #assume 1 step 1 second
+               # time.sleep(0) #assume 1 step 1 second
                 UART_Buffer()
                 getLocData() #update currentXYH
                
                 direction, degree  = computeDirection(currentHeading, currentX, currentY, targetNode.x, targetNode.y, locationNodeList.north)
                 print (direction, degree)
-                if direction == "turn left":
-                    parseInfo(19, degree)
-                elif direction == "turn right":
-                    parseInfo(29, degree)
-                else:
-                    #os.system('espeak -v+f3 -s100 -f /home/pi/soft-3002/Software3002/Audio/GoStraight.txt --stdout | aplay')
-                    print "Go straight\n"
+                	
+		if(time.time() - startTime > 0.99):
+                    startTime = time.time()
+	            if direction == "turn left":
+                        parseInfo(19, degree)
+                    elif direction == "turn right":
+                        parseInfo(29, degree)
+                    else:
+                        #os.system('espeak -v+f3 -s100 -f /home/pi/soft-3002/Software3002/Audio/GoStraight.txt --stdout | aplay')
+                        print "Go straight\n"
 
                 #just for testing. to be updated through uart by arduino
                 #currentX = int(input("Input currentX\n"))
