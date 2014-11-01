@@ -40,8 +40,6 @@ dataSend = ""
 # get JSON response from the url and parse to data
 #-----------------------------------------------------------------------------
 def initialise():
-    global inStr
-    os.system('espeak -v+f3 -s100 -f /home/pi/soft-3002/Software3002/Audio/Intro.txt --stdout | aplay')
     os.system('espeak -v+f3 -s100 -f /home/pi/soft-3002/Software3002/Audio/StartingPrompt.txt --stdout | aplay')
 
     control = ""
@@ -373,153 +371,158 @@ def say(something):
 # main
 #-----------------------------------------------------------------------------
 def main():
-    os.system('espeak -v+f3 -s100 -f /home/pi/soft-3002/Software3002/Audio/AttemptHandShake.txt --stdout | aplay')
-    handShake()
-    os.system('espeak -v+f3 -s100 -f /home/pi/soft-3002/Software3002/Audio/HandShakeCompleted.txt --stdout | aplay')
-    data = initialise()
-    #pprint(data) #to be removed
     global currentX
     global currentY
     global currentHeading
 
+    os.system('espeak -v+f3 -s100 -f /home/pi/soft-3002/Software3002/Audio/AttemptHandShake.txt --stdout | aplay')
+    handShake()
+    os.system('espeak -v+f3 -s100 -f /home/pi/soft-3002/Software3002/Audio/HandShakeCompleted.txt --stdout | aplay')
+    os.system('espeak -v+f3 -s100 -f /home/pi/soft-3002/Software3002/Audio/Intro.txt --stdout | aplay')
+    
+    data = initialise()
     locationNodeList = LocationNodeList(data["map"], data["info"])
     wifiNodeList = WifiNodeList(data["wifi"])
-    
     aList = AdjList(locationNodeList)        #constructs adjlist from node list
+ 
+    while (True):   #edited to return here when a navigation has completed
 
-    currentInstruction = ""
-    os.system('espeak -v+f3 -s100 -f /home/pi/soft-3002/Software3002/Audio/Begin.txt --stdout | aplay')
-    sendKeyInt()
-    while currentInstruction != "1#" and currentInstruction != "2#": #yet to complete change yet. #2 will be change map.
-        if currentInstruction != "":
-            sendKeyInt()     
-        UART_Buffer()
-        currentInstruction = getKeyData()
-    
-    while (currentInstruction == "1#"):   #edited to return here when a navigation has completed
-        nodeConfirm = ""
-        while (nodeConfirm != "1#"):
-            startNodeId = -1
-            destinationNodeId = -1
-            temp = ""
-            os.system('espeak -v+f3 -s100 -f /home/pi/soft-3002/Software3002/Audio/CurrentNode.txt --stdout | aplay')
-            sendKeyInt()
-            while (True):
-                if temp != "":
-                    try:   
-                        startNodeId = int(temp[:-1])
-                        if (startNodeId in locationNodeList.list):
-                            break
-                        else:
-                            os.system('espeak -v+f3 -s100 -f /home/pi/soft-3002/Software3002/Audio/WrongNodeId.txt --stdout | aplay')
+        currentInstruction = ""
+        os.system('espeak -v+f3 -s100 -f /home/pi/soft-3002/Software3002/Audio/Begin.txt --stdout | aplay')
+        sendKeyInt()
+        while currentInstruction != "1#" and currentInstruction != "2#": #yet to complete change yet. #2 will be change map.
+            if currentInstruction != "":
+                sendKeyInt()     
+            UART_Buffer()
+            currentInstruction = getKeyData()
+
+        if currentInstruction == "2#":
+            data = initialise()
+            locationNodeList = LocationNodeList(data["map"], data["info"])
+            wifiNodeList = WifiNodeList(data["wifi"])
+            aList = AdjList(locationNodeList)        #constructs adjlist from node list
+
+        else:
+# Gets current node id and dest. node id from user, then asks user to confirm if it's correct--------
+            while (nodeConfirm != "1#"):
+                startNodeId = -1
+                destinationNodeId = -1
+                temp = ""
+                os.system('espeak -v+f3 -s100 -f /home/pi/soft-3002/Software3002/Audio/CurrentNode.txt --stdout | aplay')
+                sendKeyInt()
+                while (True):
+                    if temp != "":
+                        try:   
+                            startNodeId = int(temp[:-1])
+                            if (startNodeId in locationNodeList.list):
+                                break
+                            else:
+                                os.system('espeak -v+f3 -s100 -f /home/pi/soft-3002/Software3002/Audio/WrongNodeId.txt --stdout | aplay')
+                                sendKeyInt()
+                        except ValueError:
+                            os.system('espeak -v+f3 -s100 -f /home/pi/soft-3002/Software3002/Audio/InvalidNodeID.txt --stdout | aplay')
                             sendKeyInt()
-                    except ValueError:
-                        os.system('espeak -v+f3 -s100 -f /home/pi/soft-3002/Software3002/Audio/InvalidNodeID.txt --stdout | aplay')
-                        sendKeyInt()
-                UART_Buffer()
-                temp = getKeyData()
+                    UART_Buffer()
+                    temp = getKeyData()
 
-            temp = ""
-            os.system('espeak -v+f3 -s100 -f /home/pi/soft-3002/Software3002/Audio/DesNode.txt --stdout | aplay')
-            sendKeyInt()
-            while (True):
-                if temp != "":
-                    try:
-                        destinationNodeId = int(temp[:-1])
-                        if (destinationNodeId in locationNodeList.list):
-                            break
-                        else:
-                            os.system('espeak -v+f3 -s100 -f /home/pi/soft-3002/Software3002/Audio/WrongNodeId.txt --stdout | aplay')
+                temp = ""
+                os.system('espeak -v+f3 -s100 -f /home/pi/soft-3002/Software3002/Audio/DesNode.txt --stdout | aplay')
+                sendKeyInt()
+                while (True):
+                    if temp != "":
+                        try:
+                            destinationNodeId = int(temp[:-1])
+                            if (destinationNodeId in locationNodeList.list):
+                                break
+                            else:
+                                os.system('espeak -v+f3 -s100 -f /home/pi/soft-3002/Software3002/Audio/WrongNodeId.txt --stdout | aplay')
+                                sendKeyInt()
+                        except ValueError:
+                            os.system('espeak -v+f3 -s100 -f /home/pi/soft-3002/Software3002/Audio/InvalidNodeID.txt --stdout | aplay')
                             sendKeyInt()
-                    except ValueError:
-                        os.system('espeak -v+f3 -s100 -f /home/pi/soft-3002/Software3002/Audio/InvalidNodeID.txt --stdout | aplay')
-                        sendKeyInt()
-                UART_Buffer()
-                temp = getKeyData()
+                    UART_Buffer()
+                    temp = getKeyData()
 
-            say("Node " + str(startNodeId) + " to " + "Node " + str(destinationNodeId))
-            say("To confirm, press 1, otherwise, press 2 to re-enter.")
-            nodeConfirm = ""
+                say("Node " + str(startNodeId) + " to " + "Node " + str(destinationNodeId))
+                say("To confirm, press 1, otherwise, press 2 to re-enter.")
+                nodeConfirm = ""
+                sendKeyInt()
+                while nodeConfirm != "1#" and nodeConfirm != "2#" :
+                    if nodeConfirm != "":
+                        say("Please enter 1 or 2 only.")
+                        sendKeyInt()
+                    UART_Buffer()
+                    nodeConfirm = getKeyData()
+# ----------------------------------------------------------------------------------------------------
+# Assigns the startNode and destinationNode using the id given by user, maps the shortest path--------
+            startNode = locationNodeList.getNodeById(startNodeId)
+            destinationNode = locationNodeList.getNodeById(destinationNodeId)
+        
+            path = shortestPath(aList.getGraph(), startNode.id, destinationNode.id)
+            currentX = startNode.x
+            currentY = startNode.y
+# -----------------------------------------------------------------------------------------------------
+# Wait for user to prompt begin. (after keying the nodes and being spinned)----------------------------
+            beginNav = ""
+            say("Press one to start navigation")
             sendKeyInt()
-            while nodeConfirm != "1#" and nodeConfirm != "2#" :
-                if nodeConfirm != "":
-                    say("Please enter 1 or 2 only.")
+            while beginNav != "1#": #for user to begin after keying in start and end.
+                if beginNav != "":
+                    say("Press one to start navigation")
                     sendKeyInt()
                 UART_Buffer()
-                nodeConfirm = getKeyData()
+                beginNav = getKeyData()
+# ------------------------------------------------------------------------------------------------------
+# Send initial values of x, y and map north to arduino--------------------------------------------------
+            sendSensorInt()   #indicate to ard to read sensor, then send ard currentXY
+            parseInfo(18, currentX)
+            parseInfo(28, currentY)
+            parseInfo(48, locationNodeList.north)
+            i = 1
+            startTime = time.time()
 
-        startNode = locationNodeList.getNodeById(startNodeId)
-        destinationNode = locationNodeList.getNodeById(destinationNodeId)
-        
-        path = shortestPath(aList.getGraph(), startNode.id, destinationNode.id)
-        currentX = startNode.x
-        currentY = startNode.y
+            leftFlag = 0
+            rightFlag = 0
+            time.sleep(1) #allow time for arduino to get average from heading.
 
-        #wait till after they spin you
-        beginNav = ""
-        say("Press one to start navigation")
-        sendKeyInt()
-        while beginNav != "1#": #for user to begin after keying in start and end.
-            if beginNav != "":
-                say("Press one to start navigation")
-                sendKeyInt()
-            UART_Buffer()
-            beginNav = getKeyData()
-
-        sendSensorInt()   #indicate to ard to read sensor, then send ard currentXY
-        parseInfo(18, currentX)
-        parseInfo(28, currentY)
-        parseInfo(48, locationNodeList.north)
-        i = 1
-        startTime = time.time()
-
-        leftFlag = 0
-        rightFlag = 0
-        time.sleep(1) #allow time for arduino to get average from heading.
-
-        while (isReached(currentX, currentY, destinationNode.x, destinationNode.y) == False):
+# -------------------------------------------------------------------------------------------------------
+# Navigation Loop----------------------------------------------------------------------------------------
+            while (isReached(currentX, currentY, destinationNode.x, destinationNode.y) == False):
             
-            targetNode = locationNodeList.getNodeById(path[i])
+                targetNode = locationNodeList.getNodeById(path[i])
             
-            while (isReached(currentX, currentY, targetNode.x, targetNode.y) == False):
+                while (isReached(currentX, currentY, targetNode.x, targetNode.y) == False):
   
-               # time.sleep(0) #assume 1 step 1 second
-                UART_Buffer()
-                getLocData() #update currentXYH
+                   # time.sleep(0) #assume 1 step 1 second
+                    UART_Buffer()
+                    getLocData() #update currentXYH
                
-                direction, degree  = computeDirection(currentHeading, currentX, currentY, targetNode.x, targetNode.y, locationNodeList.north)
-                print (direction, degree)
-                	
-                if direction == "turn left" and leftFlag == 0:
-                    #parseInfo(19, degree)
-                    leftFlag = 1
-                    say("Left")
-                elif direction == "turn right" and rightFlag == 0:
-                    #parseInfo(29, degree)
-                    rightFlag = 1
-                    say("Right")
-                elif direction == "straight":
-                    #os.system('espeak -v+f3 -s100 -f /home/pi/soft-3002/Software3002/Audio/GoStraight.txt --stdout | aplay')
-                    leftFlag = 0
-                    rightFlag = 0
-                    say("Straight")
-                elif leftFlag == 1 and rightFlag == 1:
-                    leftFlag = 0
-                    rightFlag = 0
+                    direction, degree  = computeDirection(currentHeading, currentX, currentY, targetNode.x, targetNode.y, locationNodeList.north)
+                    print (direction, degree)
 
-
-                #just for testing. to be updated through uart by arduino
-                #currentX = int(input("Input currentX\n"))
-                #currentY = int(input("Input currentY\n"))
-                #currentHeading = int(input("Input currentHeading\n"))
-                #currentX, currentY = updateCurrentLocation(currentX, currentY, currentHeading, 1)
+                    if direction == "turn left" and leftFlag == 0:
+                        #parseInfo(19, degree)
+                        leftFlag = 1
+                        say("Left")
+                    elif direction == "turn right" and rightFlag == 0:
+                        #parseInfo(29, degree)
+                        rightFlag = 1
+                        say("Right")
+                    elif direction == "straight":
+                        #os.system('espeak -v+f3 -s100 -f /home/pi/soft-3002/Software3002/Audio/GoStraight.txt --stdout | aplay')
+                        leftFlag = 0
+                        rightFlag = 0
+                        say("Straight")
+                    elif leftFlag == 1 and rightFlag == 1:
+                        leftFlag = 0
+                        rightFlag = 0
             
-            #output to audio here: 
-            say("Reached Node " + str(path[i]))
+                #output to audio here: 
+                say("Reached Node " + str(path[i]))
 
-            if targetNode != destinationNode : #prevent overflow
-                i = i + 1 
+                if targetNode != destinationNode : #prevent overflow
+                    i = i + 1 
 
-        say("Reached destination " + destinationNode.name)
-
+            say("Reached destination " + destinationNode.name)
+# ----------------------------------------------------------------------------------------------------
 main()
