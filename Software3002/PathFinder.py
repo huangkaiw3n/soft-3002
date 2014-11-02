@@ -299,12 +299,13 @@ def getLocData():
             realData += (ord(dataStr1))*10000
             realData += (ord(dataStr2))*100
             realData += (ord(dataStr3))
-            if(idStr == 18):
-                currentX = realData
-            elif(idStr == 28):
-                currentY = realData
-            elif(idStr == 38):
-                currentHeading = realData
+			if(!(realData is None)):
+				if(idStr == 18):
+					currentX = realData
+				elif(idStr == 28):
+					currentY = realData
+				elif(idStr == 38):
+					currentHeading = realData
         myList[0:] = []
         bufferIndex = 0
         print currentX
