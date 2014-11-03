@@ -442,7 +442,9 @@ def main():
                     if temp != "":
                         try:
                             destinationNodeId = int(temp[:-1])
-                            if (destinationNodeId in locationNodeList.list):
+                            if (destinationNodeId == startNodeId):
+                                say("Destination Node cannot be same as Start Node. Please re-enter.")
+                            elif (destinationNodeId in locationNodeList.list):
                                 break
                             else:
                                 os.system('espeak -v+f3 -s100 -f /home/pi/soft-3002/Software3002/Audio/WrongNodeId.txt --stdout | aplay')
