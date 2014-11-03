@@ -413,6 +413,7 @@ def main():
         sendKeyInt()
         while currentInstruction != "1#" and currentInstruction != "2#": #yet to complete change yet. #2 will be change map.
             if currentInstruction != "":
+                say("Please press 1 or 2 only.")
                 sendKeyInt()     
             UART_Buffer()
             currentInstruction = getKeyData()
