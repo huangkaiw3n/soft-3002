@@ -233,7 +233,8 @@ def readUART():
     tempStr = ""
     global inStr
     elapsed = Wire.millis()
-    while(ch != 123):
+    
+	while(ch != 123):
         if(Wire.serialDataAvail(serialPort) > 0):
             ch = Wire.serialGetchar(serialPort)
             if(ch < 123 and ch > -1):
@@ -248,7 +249,7 @@ def readUART():
 def putBuffer():
     global bufferIndex
     if(inStr != ""):
-        expression = (20 - int(bufferIndex)) + 1
+        expression = (30 - int(bufferIndex)) + 1
         if(len(inStr) < expression):
             myList[bufferIndex:len(inStr)] = inStr
             bufferIndex = bufferIndex + len(inStr)
@@ -283,26 +284,30 @@ def getLocData():
     global currentX
     global currentY
     global currentHeading
-    iterate = len(myList) / 4
+    iterate = len(myList) / 5
 
     try:
         if(myList != []):
             for x in xrange(0, iterate):
-                index = x*4
+                index = x*5
                 idStr = ""
+				sign = 0
                 dataStr1 = ""
                 dataStr2 = ""
                 dataStr3 = ""
                 realData = 0
                 idStr = ord(myList[index])
-                dataStr1 = myList[index+1]
-                dataStr2 = myList[index+2]
-                dataStr3 = myList[index+3]
+				sign = ord(myList[index+1])
+                dataStr1 = myList[index+2]
+                dataStr2 = myList[index+3]
+                dataStr3 = myList[index+4]
                 realData += (ord(dataStr1))*10000
                 realData += (ord(dataStr2))*100
                 realData += (ord(dataStr3))
                 if((realData is not None)):
-                    if(idStr == 18):
+					if(sign == 1):
+						realData *= -1
+                    elif(idStr == 18):
                         currentX = realData
                     elif(idStr == 28):
                         currentY = realData
