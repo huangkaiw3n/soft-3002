@@ -284,41 +284,43 @@ def getLocData():
     global currentY
     global currentHeading
     iterate = len(myList) / 4
-	try:
-		if (myList != []):
-			for x in xrange(0,iterate):
-				index = x*4
-				idStr = ""
-				dataStr1 = ""
-				dataStr2 = ""
-				dataStr3 = ""
-				realData = 0
-				idStr = ord(myList[index])
-				dataStr1 = myList[index+1]
-				dataStr2 = myList[index+2]
-				dataStr3 = myList[index+3]
-				realData += (ord(dataStr1))*10000
-				realData += (ord(dataStr2))*100
-				realData += (ord(dataStr3))
-				if(!(realData is None)):
-					if(idStr == 18):
-						currentX = realData
-					elif(idStr == 28):
-						currentY = realData
-					elif(idStr == 38):
-						currentHeading = realData
-	except TypeError:
-		myList{0:] = []
-		bufferIndex = 0
-		print ("Type Error, Probably list is non-iterable")
-		return
-	else:
+
+    try:
+        if(myList != []):
+            for x in xrange(0, iterate):
+                index = x*4
+                idStr = ""
+                dataStr1 = ""
+                dataStr2 = ""
+                dataStr3 = ""
+                realData = 0
+                idStr = ord(myList[index])
+                dataStr1 = myList[index+1]
+                dataStr2 = myList[index+2]
+                dataStr3 = myList[index+3]
+                realData += (ord(dataStr1))*10000
+                realData += (ord(dataStr2))*100
+                realData += (ord(dataStr3))
+                if((realData is not None)):
+                    if(idStr == 18):
+                        currentX = realData
+                    elif(idStr == 28):
+                        currentY = realData
+                    elif(idStr == 38):
+                        currentHeading = realData
+    except TypeError:
         myList[0:] = []
         bufferIndex = 0
+        print("Type Error, Probably list is non-iterable")
+        return
+    else:
+        myList[0:] = []
+        bufferIndex =0
         print currentX
         print currentY
         print currentHeading
     return
+
 
 def parseInfo(iden, data):
     global dataSend
