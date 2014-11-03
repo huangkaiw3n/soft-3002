@@ -313,6 +313,11 @@ def getLocData():
         bufferIndex = 0
         print("Type Error, Probably list is non-iterable")
         return
+	except ValueError:
+		myList[0:] = []
+		bufferIndex = 0
+		print("Char ascii value not valid")
+		return
     else:
         myList[0:] = []
         bufferIndex =0
