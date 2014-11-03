@@ -313,11 +313,12 @@ def getLocData():
         bufferIndex = 0
         print("Type Error, Probably list is non-iterable")
         return
-	except ValueError:
-		myList[0:] = []
-		bufferIndex = 0
-		print("Char ascii value not valid")
-		return
+    
+    except ValueError:
+        myList[0:] = []
+        bufferIndex = 0
+        print("Char ascii value not valid")
+        return
     else:
         myList[0:] = []
         bufferIndex =0
@@ -418,7 +419,8 @@ def main():
             aList = AdjList(locationNodeList)        #constructs adjlist from node list
 
         else:
-# Gets current node id and dest. node id from user, then asks user to confirm if it's correct--------
+            # Gets current node id and dest. node id from user, then asks user to confirm if it's correct--------
+            nodeConfirm = ""
             while (nodeConfirm != "1#"):
                 startNodeId = -1
                 destinationNodeId = -1
