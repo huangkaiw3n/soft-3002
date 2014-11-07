@@ -527,8 +527,9 @@ def main():
                             direction, degree  = computeDirection(currentHeading, currentX, currentY, targetNode.x, targetNode.y, locationNodeList.north)
                             break;
                         except TypeError:
-                            print("currentHeading:", currentHeading, "\n", "currentX:", currentX, "\n", "currentY:", currentY, "\n", "targetnodeXcord:", targetNode.x, "\n", "targetnodeYcord:", targetNode.y, "\n", "MapNorth:", locationNodeList.north) 
+                            print("currentHeading:", currentHeading, "\n currentX:", currentX, "\n currentY:", currentY, "\n targetnodeXcord:", targetNode.x, "\n targetnodeYcord:", targetNode.y, "\n MapNorth:", locationNodeList.north) 
                             print("end of data\n")
+                            break;
 
                     print (direction, degree)
 
