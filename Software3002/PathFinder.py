@@ -521,8 +521,15 @@ def main():
                    # time.sleep(0) #assume 1 step 1 second
                     UART_Buffer()
                     getLocData() #update currentXYH
-               
-                    direction, degree  = computeDirection(currentHeading, currentX, currentY, targetNode.x, targetNode.y, locationNodeList.north)
+                        
+                    while(True):
+                        try:
+                            direction, degree  = computeDirection(currentHeading, currentX, currentY, targetNode.x, targetNode.y, locationNodeList.north)
+                            break;
+                        except TypeError:
+                            print("currentHeading:", currentHeading, "\n", "currentX:", currentX, "\n", "currentY:", currentY, "\n", "targetnodeXcord:", targetNode.x, "\n", "targetnodeYcord:", targetNode.y, "\n", "MapNorth:", locationNodeList.north) 
+                            print("end of data\n")
+
                     print (direction, degree)
 
                     if direction == "turn left" and leftFlag == 0:
