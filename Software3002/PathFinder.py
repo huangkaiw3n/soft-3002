@@ -185,27 +185,27 @@ def computeDirection(currentHeading, currentX, currentY, nextX, nextY, north):
 # update current coordinate based on the starting coordinate, starting
 # direction and number of steps taken in that direction
 #-----------------------------------------------------------------------------
-def updateCurrentLocation(prevX, prevY, prevHeading, numStep):
-    # 1 step: 30cm
-    r = numStep * stepLength
+#def updateCurrentLocation(prevX, prevY, prevHeading, numStep):
+#    # 1 step: 30cm
+#    r = numStep * stepLength
     
-    if (prevHeading <= 90): #1st quadrant
-        currentX = prevX + r * math.sin(math.radians(prevHeading))
-        currentY = prevY + r * math.cos(math.radians(prevHeading))
+#    if (prevHeading <= 90): #1st quadrant
+#        currentX = prevX + r * math.sin(math.radians(prevHeading))
+#        currentY = prevY + r * math.cos(math.radians(prevHeading))
         
-    elif (90.0 < prevHeading and prevHeading <= 180.0): #4th quadrant
-        currentX = prevX + r * math.sin(math.radians(180.0 - prevHeading))
-        currentY = prevY - r * math.cos(math.radians(180.0 - prevHeading))
+#    elif (90.0 < prevHeading and prevHeading <= 180.0): #4th quadrant
+#        currentX = prevX + r * math.sin(math.radians(180.0 - prevHeading))
+#        currentY = prevY - r * math.cos(math.radians(180.0 - prevHeading))
         
-    elif (180.0 < prevHeading and prevHeading <= 270.0): #3rd quadrant
-        currentX = prevX - r * math.sin(math.radians(prevHeading - 180.0))
-        currentY = prevY - r * math.cos(math.radians(prevHeading - 180.0))
+#    elif (180.0 < prevHeading and prevHeading <= 270.0): #3rd quadrant
+#        currentX = prevX - r * math.sin(math.radians(prevHeading - 180.0))
+#        currentY = prevY - r * math.cos(math.radians(prevHeading - 180.0))
         
-    elif (270.0 < prevHeading and prevHeading < 360.0): #2nd quadrant
-        currentX = prevX - r * math.sin(math.radians(360.0 - prevHeading))
-        currentY = prevY + r * math.cos(math.radians(360.0 - prevHeading))
+#    elif (270.0 < prevHeading and prevHeading < 360.0): #2nd quadrant
+#        currentX = prevX - r * math.sin(math.radians(360.0 - prevHeading))
+#        currentY = prevY + r * math.cos(math.radians(360.0 - prevHeading))
         
-    return currentX, currentY
+#    return currentX, currentY
 
 
 #-----------------------------------------------------------------------------

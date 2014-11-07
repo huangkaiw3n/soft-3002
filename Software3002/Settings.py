@@ -15,8 +15,6 @@ from WiFi import internet_on
 #http://showmyway.comp.nus.edu.sg/gMIGV.php?Building=1&Level=2
 url = "http://ShowMyWay.comp.nus.edu.sg/getMapInfo.php"
 
-stepLength = 50 #cm #might no longer be needed
-
 # Allowable distance from target destination to be considered as reached
 offsetDistance = 50
 # Allowable difference in heading to considered as acceptable
