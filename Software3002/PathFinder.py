@@ -545,6 +545,14 @@ def main():
                         #os.system('espeak -v+f3 -s100 -f /home/pi/soft-3002/Software3002/Audio/GoStraight.txt --stdout | aplay')
                         leftFlag = 0
                         rightFlag = 0
+                        print("TargetNode: ")
+                        print(targetNode.id)
+                        print("\n CurrentHeading: ")
+                        print(currentHeading)
+                        print("\n CurrentX: ")
+                        print(currentX)
+                        print("\n CurrentY: ")
+                        print(currentY)
                         say("Straight")
                     elif leftFlag == 1 and rightFlag == 1:
                         leftFlag = 0
