@@ -266,14 +266,21 @@ def sendSensorInt():
     Wire.delayMicroseconds(100)
     GPIO.output(24, False)
     return
-
+	
+def flushBuffer():
+    global bufferIndex
+	Wire.serialFlush(serialPort)
+	myList[0:] = []
+	bufferIndex = 0
+    return	
+	
 def getKeyData():
     dataStr = ""
     if (myList != []):
         for x in xrange(0,len(myList)):
             dataStr += myList[x]
             if(myList[x] == "#"):
-                myList[0:] = []
+                flushBuffer()
                 return dataStr
         return ""
     else:
@@ -314,19 +321,16 @@ def getLocData():
                     elif(idStr == 38):
                         currentHeading = realData
     except TypeError:
-        myList[0:] = []
-        bufferIndex = 0
+        flushBuffer()
         print("Type Error, Probably list is non-iterable")
         return
     
     except ValueError:
-        myList[0:] = []
-        bufferIndex = 0
+        flushBuffer()
         print("Char ascii value not valid")
         return
     else:
-        myList[0:] = []
-        bufferIndex =0
+        flushBuffer()
         print currentX
         print currentY
         print currentHeading
@@ -336,10 +340,6 @@ def getLocData():
 def parseInfo(iden, data):
     global dataSend
     dataSend = ""
-    #dataSend = dataSend + str(iden)
-    #dataSend = dataSend + str(data/10000)
-    #dataSend = dataSend + str(unichr((data/100)%100))
-    #dataSend = dataSend + str(unichr(data%100))
     dataSend = str(unichr(iden))
     Wire.serialPuts(serialPort, dataSend)
     if(int(data/10000) == 0):
@@ -407,10 +407,10 @@ def main():
     aList = AdjList(locationNodeList)        #constructs adjlist from node list
  
     while (True):   #edited to return here when a navigation has completed
-
         currentInstruction = ""
         os.system('espeak -v+f3 -s100 -f /home/pi/soft-3002/Software3002/Audio/Begin.txt --stdout | aplay')
-        sendKeyInt()
+        flushBuffer()
+		sendKeyInt()
         while currentInstruction != "1#" and currentInstruction != "2#": #yet to complete change yet. #2 will be change map.
             if currentInstruction != "":
                 say("Please press 1 or 2 only.")
@@ -565,5 +565,6 @@ def main():
                     i = i + 1 
 
             say("Reached destination " + destinationNode.name)
+			sendSensorInt() #stop the sensors on arduino
 # ----------------------------------------------------------------------------------------------------
 main()
