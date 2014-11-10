@@ -266,14 +266,14 @@ def sendSensorInt():
     Wire.delayMicroseconds(100)
     GPIO.output(24, False)
     return
-	
+
 def flushBuffer():
     global bufferIndex
-	Wire.serialFlush(serialPort)
-	myList[0:] = []
-	bufferIndex = 0
-    return	
-	
+    Wire.serialFlush(serialPort)
+    myList[0:] = []
+    bufferIndex = 0
+    return
+
 def getKeyData():
     dataStr = ""
     if (myList != []):
@@ -410,7 +410,7 @@ def main():
         currentInstruction = ""
         os.system('espeak -v+f3 -s100 -f /home/pi/soft-3002/Software3002/Audio/Begin.txt --stdout | aplay')
         flushBuffer()
-		sendKeyInt()
+        sendKeyInt()
         while currentInstruction != "1#" and currentInstruction != "2#": #yet to complete change yet. #2 will be change map.
             if currentInstruction != "":
                 say("Please press 1 or 2 only.")
@@ -565,6 +565,6 @@ def main():
                     i = i + 1 
 
             say("Reached destination " + destinationNode.name)
-			sendSensorInt() #stop the sensors on arduino
+            sendSensorInt() #stop the sensors on arduino
 # ----------------------------------------------------------------------------------------------------
 main()
