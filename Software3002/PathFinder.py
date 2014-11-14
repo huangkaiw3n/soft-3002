@@ -45,9 +45,9 @@ def initialise():
     control = ""
     sendKeyInt()
     
-    while control != "1#" and control != "2#" :
+    while control != "1#" and control != "2#" and control != "3#" and control != "4#" :
         if control != "":
-            say("Please enter 1 or 2 only.")
+            say("Please enter 1, 2, 3 or 4 only.")
             sendKeyInt()
         UART_Buffer()
         control = getKeyData()
