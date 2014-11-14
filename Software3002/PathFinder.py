@@ -559,6 +559,7 @@ def main():
 
                 currentNode = locationNodeList.getNodeById(path[i-1])
                 targetNode = locationNodeList.getNodeById(path[i])
+                say("From " + currentNode.name + ", " + "to " + targetNode.name)
                 while(True):
                     try:
                         mapDegree  = computeDirection(targetNode, locationNodeList.north)
