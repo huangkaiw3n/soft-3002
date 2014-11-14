@@ -19,3 +19,7 @@ url = "http://ShowMyWay.comp.nus.edu.sg/getMapInfo.php"
 offsetDistance = 50
 # Allowable difference in heading to considered as acceptable
 offSetAngle = 4.0
+# Step Length of user
+stepLength = 42.0
+# Interval to report information
+reportInterval = 9.9

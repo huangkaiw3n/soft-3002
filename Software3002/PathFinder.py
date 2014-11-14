@@ -121,18 +121,23 @@ def initialise():
 # check whether the destination is reached.
 # return True if current location is within 0.5 meter radius of destination
 #-----------------------------------------------------------------------------
-def isReached(currentX, currentY, nextX, nextY):
-    yDistance = math.fabs((nextY * 1.0 - currentY * 1.0) * 1.0)
-    xDistance = math.fabs((nextX * 1.0 - currentX * 1.0) * 1.0)
+def isReached(targetNode):
     
-    d = math.sqrt(yDistance ** 2 + xDistance ** 2)
-    
+    d = getDistance(targetNode)
+        
     if (d < offsetDistance):
         return True
     else:
         return False
      
-     
+def getDistance(targetNode):
+    yDistance = math.fabs((targetNode.y * 1.0 - currentY * 1.0) * 1.0)
+    xDistance = math.fabs((targetNode.x * 1.0 - currentX * 1.0) * 1.0)
+    
+    d = math.sqrt(yDistance ** 2 + xDistance ** 2)
+
+    return d
+
 #-----------------------------------------------------------------------------
 # compute direction based on current coordinate and heading,
 # since currentHeading is with respect to the map's North, it will be offset
@@ -398,6 +403,13 @@ def handShake():
 # Espeak----------------------------------------------------------------------
 def say(something):
     os.system('espeak -v+f3 -s100 "{0}" --stdout |aplay'.format(something))
+
+def infoReport(targetNode):
+
+    d = getDistance(targetNode)
+    steps = int(d/stepLength)
+    say("You are approximately " + str(steps) + "steps from the next node, " + targetNode.name)
+
 #-----------------------------------------------------------------------------
 # main
 #-----------------------------------------------------------------------------
@@ -522,12 +534,16 @@ def main():
 
 # -------------------------------------------------------------------------------------------------------
 # Navigation Loop----------------------------------------------------------------------------------------
-            while (isReached(currentX, currentY, destinationNode.x, destinationNode.y) == False):
+            while (isReached(destinationNode) == False):
             
                 targetNode = locationNodeList.getNodeById(path[i])
             
                 while (isReached(currentX, currentY, targetNode.x, targetNode.y) == False):
-  
+
+                    if(startTime - time.time() > reportInterval):
+                        infoReport(targetNode)
+                        startTime = time.time()
+
                    # time.sleep(0) #assume 1 step 1 second
                     UART_Buffer()
                     getLocData() #update currentXYH
@@ -544,15 +560,12 @@ def main():
                     print (direction, degree)
 
                     if direction == "turn left" and leftFlag == 0:
-                        #parseInfo(19, degree)
                         leftFlag = 1
                         say("Left")
                     elif direction == "turn right" and rightFlag == 0:
-                        #parseInfo(29, degree)
                         rightFlag = 1
                         say("Right")
                     elif direction == "straight":
-                        #os.system('espeak -v+f3 -s100 -f /home/pi/soft-3002/Software3002/Audio/GoStraight.txt --stdout | aplay')
                         leftFlag = 0
                         rightFlag = 0
                         print("TargetNode: ")
@@ -569,7 +582,7 @@ def main():
                         rightFlag = 0
             
                 #output to audio here: 
-                say("Reached Node " + str(path[i]))
+                say("Reached Node " + str(path[i]) + targetNode.name)
 
                 if targetNode != destinationNode : #prevent overflow
                     i = i + 1 
