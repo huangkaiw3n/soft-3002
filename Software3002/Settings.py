@@ -18,7 +18,7 @@ url = "http://ShowMyWay.comp.nus.edu.sg/getMapInfo.php"
 # Allowable distance from target destination to be considered as reached
 offsetDistance = 50
 # Allowable difference in heading to considered as acceptable
-offSetAngle = 4.0
+offSetAngle = 2.0
 # Step Length of user
 stepLength = 42.0
 # Interval to report information
