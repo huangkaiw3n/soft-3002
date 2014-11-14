@@ -135,6 +135,7 @@ def getDistance(targetNode):
     xDistance = math.fabs((targetNode.x * 1.0 - currentX * 1.0) * 1.0)
     
     d = math.sqrt(yDistance ** 2 + xDistance ** 2)
+    print ("distance: " + str(d) + "\n")
 
     return d
 
@@ -426,7 +427,7 @@ def infoReport(targetNode):
 
     d = getDistance(targetNode)
     steps = int(d/stepLength)
-    say("You are " + str(steps) + "steps from node " + str(targetNode.id) + " " + targetNode.name)
+    say(str(steps) + "steps to " + str(targetNode.id) + " " + targetNode.name)
 
 #-----------------------------------------------------------------------------
 # main
@@ -567,12 +568,14 @@ def main():
                 parseInfo(48, mapDegree)
 
                 angleToFace = int(currentNode.neighbourAngle[str(path[i])])
+                print (angleToFace)
 
                 direction = ""
                 while(direction != "straight"):
                     UART_Buffer()
                     getLocData() #update currentXYH
                     direction = directUser(angleToFace)
+                    print (currentHeading)
 
                     if direction == "turn left" and leftFlag == 0:
                         leftFlag = 1
