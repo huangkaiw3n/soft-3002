@@ -143,21 +143,21 @@ def getDistance(targetNode):
 # since currentHeading is with respect to the map's North, it will be offset
 # to become with respect to the absolute north.
 #-----------------------------------------------------------------------------    
-def computeDirection(currentHeading, currentX, currentY, nextX, nextY, north):
+def computeDirection(targetNode, north):
     currentHeadingWithOffset = currentHeading + north
     if (currentHeadingWithOffset >= 360.0):
         currentHeadingWithOffset = currentHeadingWithOffset - 360.0
 
-    yDistance = (nextY * 1.0 - currentY * 1.0) * 1.0
-    xDistance = (nextX * 1.0 - currentX * 1.0) * 1.0
+    yDistance = (targetNode.y * 1.0 - currentY * 1.0) * 1.0
+    xDistance = (targetNode.x * 1.0 - currentX * 1.0) * 1.0
     
     if (yDistance == 0):
-        if (nextX * 1.0 - currentX * 1.0) > 0.0:
+        if (targetNode.x * 1.0 - currentX * 1.0) > 0.0:
             targetHeading = 90.0
         else:
             targetHeading = 270.0
     elif (xDistance == 0):
-        if (nextY * 1.0 - currentY * 1.0) > 0.0:
+        if (targetNode.y * 1.0 - currentY * 1.0) > 0.0:
             targetHeading = 0.0
         else:
             targetHeading = 180.0
@@ -538,7 +538,7 @@ def main():
             
                 targetNode = locationNodeList.getNodeById(path[i])
             
-                while (isReached(currentX, currentY, targetNode.x, targetNode.y) == False):
+                while (isReached(targetNode) == False):
 
                     if(startTime - time.time() > reportInterval):
                         infoReport(targetNode)
@@ -550,7 +550,7 @@ def main():
                         
                     while(True):
                         try:
-                            direction, degree  = computeDirection(currentHeading, currentX, currentY, targetNode.x, targetNode.y, locationNodeList.north)
+                            direction, degree  = computeDirection(targetNode, locationNodeList.north)
                             break;
                         except TypeError:
                             print("currentHeading:", currentHeading, "\n currentX:", currentX, "\n currentY:", currentY, "\n targetnodeXcord:", targetNode.x, "\n targetnodeYcord:", targetNode.y, "\n MapNorth:", locationNodeList.north) 
