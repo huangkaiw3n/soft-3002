@@ -27,6 +27,7 @@ class LocationNode(Node):
         Node.__init__(self, nodeInfo)
         self.addNeighbor(nodeInfo)
         self.linkTo = []      #list of connected node ids coverted to integer
+        self.neighbourAngle = nodeInfo["angle"] # "angle":{"1":"x","3":"x","4":"x"}
         for i in range(0, len(self.neighborsList)):
             self.linkTo.append(int(self.neighborsList[i]))
 
@@ -38,7 +39,6 @@ class LocationNode(Node):
                  
     def addNeighbor(self, nodeInfo):
         self.neighborsList = nodeInfo["linkTo"].split(",") #list of strings, must convert to integer first
-    
 
 #-----------------------------------------------------------------------------
 # WifiNode class inherits from Node class
