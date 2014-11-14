@@ -570,12 +570,13 @@ def main():
                 angleToFace = int(currentNode.neighbourAngle[str(path[i])])
                 print (angleToFace)
 
+                time.sleep(1)
                 direction = ""
                 while(direction != "straight"):
                     UART_Buffer()
                     getLocData() #update currentXYH
                     direction = directUser(angleToFace)
-                    print (currentHeading)
+                    print ("CurrentHeading: " + str(currentHeading) + "\n")
 
                     if direction == "turn left" and leftFlag == 0:
                         leftFlag = 1
