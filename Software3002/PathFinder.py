@@ -177,24 +177,42 @@ def computeDirection(targetNode, north):
         finalHeading = currentHeading - (360.0-math.fabs(diffAngle))
         if finalHeading < 0:
             finalHeading = finalHeading + 360
-        return "turn left", finalHeading
+        return finalHeading
     elif (-180.0 < diffAngle and diffAngle < -offSetAngle):
         finalHeading = currentHeading + (math.fabs(diffAngle))
         if finalHeading >= 360:
             finalHeading = finalHeading - 360
-        return "turn right", finalHeading
+        return finalHeading
     elif (-offSetAngle < diffAngle and diffAngle < offSetAngle):
-        return "straight", currentHeading
+        return currentHeading
     elif (offSetAngle < diffAngle and diffAngle < 180.0):
         finalHeading = currentHeading - diffAngle
         if finalHeading < 0:
             finalHeading = finalHeading + 360
-        return "turn left", finalHeading
+        return finalHeading
     elif (diffAngle > 180.0):
         finalHeading = currentHeading + (360.0-diffAngle)
         if finalHeading >= 360:
             finalHeading = finalHeading - 360
-        return "turn right", finalHeading
+        return finalHeading
+
+def directUser(angleToFace):
+    try:
+        diff = currentHeading - angleToFace
+    except TypeError:
+        return ""
+
+    if(math.fabs(diff) <= offSetAngle):
+        return "straight"
+    if(offSetAngle < diff and diff <= 180):
+        return "turn left"
+    if(180 < diff and diff <= 360):
+        return "turn right"
+    if(-180 <= diff and diff < (offSetAngle * -1)):
+        return "turn right"
+    if(-360 <= diff and diff < -180):
+        return "turn left"
+
 
 #-----------------------------------------------------------------------------
 # update current coordinate based on the starting coordinate, starting
@@ -408,7 +426,7 @@ def infoReport(targetNode):
 
     d = getDistance(targetNode)
     steps = int(d/stepLength)
-    say("You are approximately " + str(steps) + "steps from the next node, " + targetNode.name)
+    say("You are " + str(steps) + "steps from node " + str(targetNode.id) + " " + targetNode.name)
 
 #-----------------------------------------------------------------------------
 # main
@@ -524,7 +542,6 @@ def main():
             sendSensorInt()   #indicate to ard to read sensor, then send ard currentXY
             parseInfo(18, currentX)
             parseInfo(28, currentY)
-            parseInfo(48, locationNodeList.north)
             i = 1
             startTime = time.time()
 
@@ -535,29 +552,27 @@ def main():
 # -------------------------------------------------------------------------------------------------------
 # Navigation Loop----------------------------------------------------------------------------------------
             while (isReached(destinationNode) == False):
-            
+
+                currentNode = locationNodeList.getNodeById(path[i-1])
                 targetNode = locationNodeList.getNodeById(path[i])
-            
-                while (isReached(targetNode) == False):
+                while(True):
+                    try:
+                        mapDegree  = computeDirection(targetNode, locationNodeList.north)
+                        break;
+                    except TypeError:
+                        print("currentHeading:", currentHeading, "\n currentX:", currentX, "\n currentY:", currentY, "\n targetnodeXcord:", targetNode.x, "\n targetnodeYcord:", targetNode.y, "\n MapNorth:", locationNodeList.north) 
+                        print("end of data\n")
+                        break;
+                mapDegree = (mapDegree + locationNodeList.north) % 360
+                parseInfo(48, mapDegree)
 
-                    if(time.time() - startTime > reportInterval):
-                        infoReport(targetNode)
-                        startTime = time.time()
+                angleToFace = int(currentNode.neighbourAngle[str(path[i])])
 
-                   # time.sleep(0) #assume 1 step 1 second
+                direction = ""
+                while(direction != "straight"):
                     UART_Buffer()
                     getLocData() #update currentXYH
-                        
-                    while(True):
-                        try:
-                            direction, degree  = computeDirection(targetNode, locationNodeList.north)
-                            break;
-                        except TypeError:
-                            print("currentHeading:", currentHeading, "\n currentX:", currentX, "\n currentY:", currentY, "\n targetnodeXcord:", targetNode.x, "\n targetnodeYcord:", targetNode.y, "\n MapNorth:", locationNodeList.north) 
-                            print("end of data\n")
-                            break;
-
-                    print (direction, degree)
+                    direction = directUser(angleToFace)
 
                     if direction == "turn left" and leftFlag == 0:
                         leftFlag = 1
@@ -580,9 +595,17 @@ def main():
                     elif leftFlag == 1 and rightFlag == 1:
                         leftFlag = 0
                         rightFlag = 0
-            
+
+                while (isReached(targetNode) == False):
+                    UART_Buffer()
+                    getLocData() #update currentXYH
+
+                    if(time.time() - startTime > reportInterval):
+                        infoReport(targetNode)
+                        startTime = time.time()
+           
                 #output to audio here: 
-                say("Reached Node " + str(path[i]) + targetNode.name)
+                say("Reached Node " + str(path[i]) + " " + targetNode.name)
 
                 if targetNode != destinationNode : #prevent overflow
                     i = i + 1 
