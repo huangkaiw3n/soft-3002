@@ -16,10 +16,10 @@ from WiFi import internet_on
 url = "http://ShowMyWay.comp.nus.edu.sg/getMapInfo.php"
 
 # Allowable distance from target destination to be considered as reached
-offsetDistance = 50
+offsetDistance = 40
 # Allowable difference in heading to considered as acceptable
 offSetAngle = 2.0
 # Step Length of user
-stepLength = 42.0
+stepLength = 60.0
 # Interval to report information
-reportInterval = 9.9
+reportInterval = 6.9
