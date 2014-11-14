@@ -427,7 +427,8 @@ def infoReport(targetNode):
 
     d = getDistance(targetNode)
     steps = int(d/stepLength)
-    say(str(steps) + "steps to " + str(targetNode.id) + " " + targetNode.name)
+    say(str(steps) + "steps.")
+    # + "steps to " + str(targetNode.id) + " " + targetNode.name
 
     return steps
 
@@ -610,9 +611,9 @@ def main():
                     if(time.time() - startTime > reportInterval):
                         currentStep = infoReport(targetNode)
                         startTime = time.time()
-                    print("PrevStep: " + str(prevStep) + "\n")
-                    print("CurrentStep: " + str(currentStep) + "\n")
-                    time.sleep(0.5)
+                    #print("PrevStep: " + str(prevStep) + "\n")
+                    #print("CurrentStep: " + str(currentStep) + "\n")
+                    #time.sleep(0.5)
                     if(prevStep < currentStep):
                         break
                     else:
