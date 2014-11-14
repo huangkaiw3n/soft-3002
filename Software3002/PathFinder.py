@@ -97,7 +97,17 @@ def initialise():
         level = ""
         
     if control == "2#":
-        json_data=open('com.txt')
+        json_data=open('/home/pi/soft-3002/Software3002/Maps/com1_2.txt')
+        data = json.load(json_data)
+        json_data.close()
+
+    elif control == "3#":
+        json_data=open('/home/pi/soft-3002/Software3002/Maps/com2_2.txt')
+        data = json.load(json_data)
+        json_data.close()
+
+    elif control == "4#":
+        json_data=open('/home/pi/soft-3002/Software3002/Maps/com2_3.txt')
         data = json.load(json_data)
         json_data.close()
   

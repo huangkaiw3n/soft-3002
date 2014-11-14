@@ -1,1 +1,1 @@
-Press 1 to input new map, Press 2 to load Com 1 Level 2.
+Press 1 to input new map, 2 to load Com 1 Level 2, 3 for Com 2 Level 2, 4 for Com 2 Level 3.
