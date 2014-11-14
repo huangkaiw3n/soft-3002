@@ -16,10 +16,10 @@ currentHeading = 0
 inStr = "" 
 #-----------------------------------------------------------------------------
 # Sample command to play Intro.txt audio
-# os.system('espeak -v+f3 -s100 -f /home/pi/Vision/Intro.txt --stdout | aplay')
+# os.system('espeak -v+f3 -s150 -f /home/pi/Vision/Intro.txt --stdout | aplay')
 # all audio will be put in .txt files to resolve a lag issue with audio playback
 # For playback without .txt file:
-# os.system('espeak -v+f3 -s100 "your command here" --stdout | aplay')
+# os.system('espeak -v+f3 -s150 "your command here" --stdout | aplay')
 #-----------------------------------------------------------------------------
 # UART peripherals
 Wire.wiringPiSetupGpio()
@@ -40,7 +40,7 @@ dataSend = ""
 # get JSON response from the url and parse to data
 #-----------------------------------------------------------------------------
 def initialise():
-    os.system('espeak -v+f3 -s100 -f /home/pi/soft-3002/Software3002/Audio/StartingPrompt.txt --stdout | aplay')
+    os.system('espeak -v+f3 -s150 -f /home/pi/soft-3002/Software3002/Audio/StartingPrompt.txt --stdout | aplay')
 
     control = ""
     sendKeyInt()
@@ -55,13 +55,13 @@ def initialise():
     buildingName = ""
     level = ""
     while control == "1#":
-        os.system('espeak -v+f3 -s100 -f /home/pi/soft-3002/Software3002/Audio/BuildingName.txt --stdout | aplay')
+        os.system('espeak -v+f3 -s150 -f /home/pi/soft-3002/Software3002/Audio/BuildingName.txt --stdout | aplay')
         sendKeyInt()
         while buildingName == "" :
             UART_Buffer()
             buildingName = getKeyData()[:-1]
             
-        os.system('espeak -v+f3 -s100 -f /home/pi/soft-3002/Software3002/Audio/BuildingLevel.txt --stdout | aplay')
+        os.system('espeak -v+f3 -s150 -f /home/pi/soft-3002/Software3002/Audio/BuildingLevel.txt --stdout | aplay')
         sendKeyInt()
         
         while (True):
@@ -73,7 +73,7 @@ def initialise():
                 params = dict(Building = buildingName, Level = int(level))
                 break
             except ValueError:
-                os.system('espeak -v+f3 -s100 -f /home/pi/soft-3002/Software3002/Audio/InvalidLevel.txt --stdout | aplay')
+                os.system('espeak -v+f3 -s150 -f /home/pi/soft-3002/Software3002/Audio/InvalidLevel.txt --stdout | aplay')
                 level = ""
                 sendKeyInt()
         
@@ -83,7 +83,7 @@ def initialise():
         else:
             time.sleep(5)
             if (internet_on() == False):
-                os.system('espeak -v+f3 -s100 -f /home/pi/soft-3002/Software3002/Audio/InternetOff.txt --stdout | aplay')
+                os.system('espeak -v+f3 -s150 -f /home/pi/soft-3002/Software3002/Audio/InternetOff.txt --stdout | aplay')
                 control = "2#"
                 break
             else:
@@ -92,7 +92,7 @@ def initialise():
         if data["info"] is not None:
             #map name loaded
             break
-        os.system('espeak -v+f3 -s100 -f /home/pi/soft-3002/Software3002/Audio/WrongMapInfo.txt --stdout | aplay')
+        os.system('espeak -v+f3 -s150 -f /home/pi/soft-3002/Software3002/Audio/WrongMapInfo.txt --stdout | aplay')
         buildingName = ""
         level = ""
         
@@ -402,7 +402,7 @@ def handShake():
 
 # Espeak----------------------------------------------------------------------
 def say(something):
-    os.system('espeak -v+f3 -s100 "{0}" --stdout |aplay'.format(something))
+    os.system('espeak -v+f3 -s150 "{0}" --stdout |aplay'.format(something))
 
 def infoReport(targetNode):
 
@@ -418,10 +418,10 @@ def main():
     global currentY
     global currentHeading
 
-    os.system('espeak -v+f3 -s100 -f /home/pi/soft-3002/Software3002/Audio/AttemptHandShake.txt --stdout | aplay')
+    os.system('espeak -v+f3 -s150 -f /home/pi/soft-3002/Software3002/Audio/AttemptHandShake.txt --stdout | aplay')
     handShake()
-    os.system('espeak -v+f3 -s100 -f /home/pi/soft-3002/Software3002/Audio/HandShakeCompleted.txt --stdout | aplay')
-    os.system('espeak -v+f3 -s100 -f /home/pi/soft-3002/Software3002/Audio/Intro.txt --stdout | aplay')
+    os.system('espeak -v+f3 -s150 -f /home/pi/soft-3002/Software3002/Audio/HandShakeCompleted.txt --stdout | aplay')
+    os.system('espeak -v+f3 -s150 -f /home/pi/soft-3002/Software3002/Audio/Intro.txt --stdout | aplay')
     
     data = initialise()
     locationNodeList = LocationNodeList(data["map"], data["info"])
@@ -430,7 +430,7 @@ def main():
  
     while (True):   #edited to return here when a navigation has completed
         currentInstruction = ""
-        os.system('espeak -v+f3 -s100 -f /home/pi/soft-3002/Software3002/Audio/Begin.txt --stdout | aplay')
+        os.system('espeak -v+f3 -s150 -f /home/pi/soft-3002/Software3002/Audio/Begin.txt --stdout | aplay')
         flushBuffer()
         sendKeyInt()
         while currentInstruction != "1#" and currentInstruction != "2#": #yet to complete change yet. #2 will be change map.
@@ -453,7 +453,7 @@ def main():
                 startNodeId = -1
                 destinationNodeId = -1
                 temp = ""
-                os.system('espeak -v+f3 -s100 -f /home/pi/soft-3002/Software3002/Audio/CurrentNode.txt --stdout | aplay')
+                os.system('espeak -v+f3 -s150 -f /home/pi/soft-3002/Software3002/Audio/CurrentNode.txt --stdout | aplay')
                 sendKeyInt()
                 while (True):
                     if temp != "":
@@ -462,16 +462,16 @@ def main():
                             if (startNodeId in locationNodeList.list):
                                 break
                             else:
-                                os.system('espeak -v+f3 -s100 -f /home/pi/soft-3002/Software3002/Audio/WrongNodeId.txt --stdout | aplay')
+                                os.system('espeak -v+f3 -s150 -f /home/pi/soft-3002/Software3002/Audio/WrongNodeId.txt --stdout | aplay')
                                 sendKeyInt()
                         except ValueError:
-                            os.system('espeak -v+f3 -s100 -f /home/pi/soft-3002/Software3002/Audio/InvalidNodeID.txt --stdout | aplay')
+                            os.system('espeak -v+f3 -s150 -f /home/pi/soft-3002/Software3002/Audio/InvalidNodeID.txt --stdout | aplay')
                             sendKeyInt()
                     UART_Buffer()
                     temp = getKeyData()
 
                 temp = ""
-                os.system('espeak -v+f3 -s100 -f /home/pi/soft-3002/Software3002/Audio/DesNode.txt --stdout | aplay')
+                os.system('espeak -v+f3 -s150 -f /home/pi/soft-3002/Software3002/Audio/DesNode.txt --stdout | aplay')
                 sendKeyInt()
                 while (True):
                     if temp != "":
@@ -482,10 +482,10 @@ def main():
                             elif (destinationNodeId in locationNodeList.list):
                                 break
                             else:
-                                os.system('espeak -v+f3 -s100 -f /home/pi/soft-3002/Software3002/Audio/WrongNodeId.txt --stdout | aplay')
+                                os.system('espeak -v+f3 -s150 -f /home/pi/soft-3002/Software3002/Audio/WrongNodeId.txt --stdout | aplay')
                                 sendKeyInt()
                         except ValueError:
-                            os.system('espeak -v+f3 -s100 -f /home/pi/soft-3002/Software3002/Audio/InvalidNodeID.txt --stdout | aplay')
+                            os.system('espeak -v+f3 -s150 -f /home/pi/soft-3002/Software3002/Audio/InvalidNodeID.txt --stdout | aplay')
                             sendKeyInt()
                     UART_Buffer()
                     temp = getKeyData()
