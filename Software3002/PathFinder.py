@@ -540,7 +540,7 @@ def main():
             
                 while (isReached(targetNode) == False):
 
-                    if(startTime - time.time() > reportInterval):
+                    if(time.time() - startTime > reportInterval):
                         infoReport(targetNode)
                         startTime = time.time()
 
