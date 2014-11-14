@@ -429,6 +429,8 @@ def infoReport(targetNode):
     steps = int(d/stepLength)
     say(str(steps) + "steps to " + str(targetNode.id) + " " + targetNode.name)
 
+    return steps
+
 #-----------------------------------------------------------------------------
 # main
 #-----------------------------------------------------------------------------
@@ -568,7 +570,7 @@ def main():
                 parseInfo(48, mapDegree)
 
                 angleToFace = int(currentNode.neighbourAngle[str(path[i])])
-                print (angleToFace)
+                print ("AngletoFace:" + str(angleToFace))
 
                 time.sleep(1)
                 direction = ""
@@ -600,13 +602,18 @@ def main():
                         leftFlag = 0
                         rightFlag = 0
 
+                prevStep = 1000000
                 while (isReached(targetNode) == False):
                     UART_Buffer()
                     getLocData() #update currentXYH
 
                     if(time.time() - startTime > reportInterval):
-                        infoReport(targetNode)
+                        currentStep = infoReport(targetNode)
                         startTime = time.time()
+                    if(prevStep < currentStep):
+                        break
+                    else:
+                        prevStep = currentStep
            
                 #output to audio here: 
                 say("Reached Node " + str(path[i]) + " " + targetNode.name)
