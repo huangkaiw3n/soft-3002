@@ -610,10 +610,16 @@ def main():
                     if(time.time() - startTime > reportInterval):
                         currentStep = infoReport(targetNode)
                         startTime = time.time()
+                    print("PrevStep: " + str(prevStep) + "\n")
+                    print("CurrentStep: " + str(currentStep) + "\n")
+                    time.sleep(0.5)
                     if(prevStep < currentStep):
                         break
                     else:
                         prevStep = currentStep
+
+                    UART_Buffer()
+                    getLocData() #update currentXYH
            
                 #output to audio here: 
                 say("Reached Node " + str(path[i]) + " " + targetNode.name)
