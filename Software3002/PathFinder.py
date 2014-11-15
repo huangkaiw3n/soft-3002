@@ -501,7 +501,7 @@ def main():
                             destinationNodeId = int(temp[:-1])
                             if (destinationNodeId == startNodeId):
                                 say("Destination Node cannot be same as Start Node. Please re-enter.")
-                                sendKeyInt
+                                sendKeyInt()
                             elif (destinationNodeId in locationNodeList.list):
                                 break
                             else:
