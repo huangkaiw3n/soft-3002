@@ -20,6 +20,6 @@ offsetDistance = 50
 # Allowable difference in heading to considered as acceptable
 offSetAngle = 2.0
 # Step Length of user
-stepLength = 50.0
+stepLength = 44.0
 # Interval to report information
 reportInterval = 6.9
